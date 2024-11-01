@@ -1,0 +1,59 @@
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    cursor: pointer;
+    padding: 5px;
+}
+
+li:hover {
+    background-color: #79797980;
+}
+.right-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row-item {
+  justify-content: space-between;
+  display: flex;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.odd-item {
+  background-color: rgb(48, 48, 48);
+}
+
+.odd-item:hover {
+  background-color: rgb(100, 72, 72);
+}
+
+.even-item:hover {
+  background-color: rgb(100, 72, 72);
+}
+.even-item {
+  background-color: rgb(62, 62, 62);
+}
+
+.dark-textarea {
+    margin-top: auto;
+    font-size: 18px;
+    background-color: #333;
+    color: #bdbdbd;
+    border: 1px solid #555;
+    resize: none;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}

@@ -1,0 +1,405 @@
+<template>
+    <p v-if="isLoading">Loading...</p>
+    <div v-if="!isLoading">
+        <div v-if="errorMessage">
+            <h2 class="error">{{ errorMessage }} <a v-if="errorCode === 401" href="#" @click.prevent="login">Log in</a>
+            </h2>
+
+        </div>
+        <div ref="commentsContainer" class="commentsContainer">
+            <template v-if="parent_id == 0">
+                <div :id="`reply-input-${0}`" class="reply-input" style="display: block;">
+                    <textarea :id="`reply-content-${0}`" placeholder="Type your comment here..."
+                        @input="adjustTextareaHeight($event)" rows="1" class="dark-textarea"></textarea>
+                </div>
+                <div class="button-container">
+                    <button @click.prevent="submitReply()" class="dark-button">Comment</button>
+                </div>
+            </template>
+            <div v-if="showDeleteConfirm" class="modal-overlay">
+                <div class="modal-content" ref= "modalContent" v-on:blur="cancelDelete" tabindex="0">
+                    <p>Are you sure you want to <strong>delete</strong> this comment?</p>
+                    <br>
+                    <div style="display: flex; justify-content:space-evenly;">
+                        <button class="dark-button" @click="deleteComment">Yes</button>
+                        <button class="dark-button" @click="cancelDelete">No</button></div>
+                    </div>
+            </div>
+            <div v-for="comment in parsedComments" :key="comment.id" :id="`comment-${comment.id}`" class="comment">
+                <br>
+                <div><strong :class="{ 'comment-text': comment.parent_id === 0, 'reply-text': comment.parent_id !== 0 }"
+                        v-html="comment.content">
+                    </strong><br>
+                    <i class="divider-text"> by </i><i class="username">{{ comment.username }}</i>
+                    <i class="divider-text"> at </i><i class="timestamp">{{ new
+                        Date(comment.created_at).toLocaleString(undefined, {
+                            year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                        }) }}</i>
+
+                    <a href="#" :class="['like-button', { active: comment.l_d === 'Like' }]"
+                        @click.prevent="likeComment(comment)"><span class="material-icons">thumb_up</span></a>
+                    <span class="like-count"> {{ comment.likes }} </span>
+                    <a href="#" :class="['dislike-button', { active: comment.l_d === 'Dislike' }]"
+                        @click.prevent="dislikeComment(comment)"><span class="material-icons">thumb_down</span></a>
+                    <a href="#" class="reply-link" @click.prevent="toggleReplyField(comment)">{{ comment.replyFieldText
+                        }}</a>
+
+                    <template v-if="username === comment.username">
+                        <a href="#" class="delete-link" @click.prevent="confirmDeletePrompt(comment)">Delete</a>
+                    </template>
+                </div>
+                <div>
+                    <div :id="`reply-input-${comment.id}`" class="reply-input"
+                        v-show="comment.replyFieldText === 'Hide'">
+                        <textarea :id="`reply-content-${comment.id}`" placeholder="Type your comment here..."
+                            @input="adjustTextareaHeight($event)" rows="1" class="dark-textarea"
+                            v-focus="[comment.id, currentReplyFocus]"></textarea>
+                        <div class="button-container">
+                            <button @click.prevent="submitReply(comment)" class="dark-button">Reply</button>
+                        </div>
+                    </div>
+                    <template v-if="comment.replies > 0">
+                        <a href="#" class="show-replies-link"
+                            @click.prevent="comment.showReplies = !comment.showReplies">
+                            {{ showRepliesText(comment) }}
+                        </a>
+                    </template>
+                    <template v-if="comment.replies > 0">
+                        <div :style="{ marginLeft: margin_left + '%' }">
+                            <CommentView v-if="comment.showReplies" :post_id="post_id" :parent_id="comment.id" />
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { nextTick } from 'vue';
+const focusDirective = {
+    updated(el, binding) {
+        if (binding.value && binding.value[0] == binding.value[1]) {
+            nextTick(() => {
+                el.focus();
+            });
+        }
+    }
+};
+
+const vFocus = focusDirective;
+</script>
+
+
+
+<script>
+import { backendMainAppAddress } from '@/config';
+import { nextTick } from 'vue';
+import axios from 'axios';
+
+export default {
+    props: {
+        post_id: {
+            type: String,
+            required: true,
+        },
+        parent_id: {
+            type: Number,
+            default: 0
+        },
+        margin_left: {
+            type: Number,
+            default: 2
+        }
+    },
+    data() {
+        return {
+            errorMessage: '',
+            errorCode: 0,
+            parsedComments: [],
+            isLoading: true,
+            username: null,
+            showDeleteConfirm: false,
+            commentToDelete: null,
+            currentReplyFocus: null
+        };
+    },
+    watch: {
+        post_id(newVal) {
+            this.parsedComments = [];
+            this.fetch_replies(this.parent_id, 0);
+        },
+    },
+    mounted() {
+        this.fetch_replies(this.parent_id, 0);
+        this.isLoading = false;
+    },
+    methods: {
+        async fetch_replies(parent_id, page) {
+            this.errorMessage = '';
+            const token = sessionStorage.getItem('loginJwt');
+            try {
+                const config = {
+                    params: {
+                        parent_id: parent_id,
+                        page: page
+                    },
+                    headers: {
+                        Authorization: token,
+                    }
+                };
+                const fetchCommentsResponse = await axios.get(`${backendMainAppAddress}/post/${this.post_id}/comments`, config);
+                this.parsedComments = fetchCommentsResponse.data.replies.map(comment => ({ ...comment, showReplies: false, replyFieldText: "Reply" }));
+                this.username = sessionStorage.getItem('username')
+            } catch (error) {
+                this.errorMessage = error.response.data.detail || 'Something went wrong.';
+                this.errorCode = error.status;
+            }
+        },
+        toggleReplyField(comment) {
+            comment.replyFieldText = comment.replyFieldText === "Reply" ? "Hide" : "Reply";
+            this.currentReplyFocus = comment.id;
+        },
+        adjustTextareaHeight(event) {
+            const textarea = event.target;
+            textarea.style.height = 'auto'; // Reset height to calculate the new size
+            textarea.style.height = `${textarea.scrollHeight}px`; // Set height based on scroll height
+        },
+        async submitReply(parentComment = { id: 0 }) {
+            const token = sessionStorage.getItem('loginJwt');
+            const replyInput = document.getElementById(`reply-content-${parentComment.id}`);
+            const replyContent = replyInput.value;
+            const data = {
+                parent_id: parentComment.id,
+                post_id: this.post_id,
+                content: replyContent,
+            };
+            const config = {
+                headers: {
+                    Authorization: token,
+                }
+            };
+            try {
+                await axios.post(`${backendMainAppAddress}/post/comment`, data, config);
+                replyInput.value = '';
+                replyInput.style.height = 'auto';
+                this.fetch_replies(this.parent_id, 0);
+            } catch (error) {
+                if (error.status === 401) {
+                    this.errorMessage = "You need to log in first.";
+                    this.errorCode = error.status;
+                }
+                else {
+                    if ("string_too_short" === error.response.data.detail[0].type) {
+                        this.errorMessage = "Comments should at least have 4 characters";
+                    } else {
+                        this.errorMessage = error.response.data.detail[0].msg
+                    }
+                    this.errorCode = error.status;
+                }
+            }
+            if (parentComment.id != 0) {
+                this.toggleReplyField(parentComment);
+            }
+        },
+
+        cancelReply(commentId) {
+            const replyInput = document.getElementById(`reply-content-${commentId}`);
+            replyInput.value = '';
+            replyInput.style.height = 'auto';
+            this.toggleReplyField(commentId);
+        },
+        prepare_config(commentId) {
+            const token = sessionStorage.getItem('loginJwt');
+            return {
+                params: {
+                    comment_id: commentId
+                }, headers: {
+                    Authorization: token
+                }
+            };
+        },
+        async likeComment(comment) {
+            const config = this.prepare_config(comment.id)
+            try {
+                const fetchCommentsResponse = await axios.get(`${backendMainAppAddress}/post/${this.post_id}/comment/like`, config);
+                const msg = fetchCommentsResponse.data.msg
+                if (msg == "Liked") {
+                    comment.likes += 1;
+                    comment.l_d = "Like";
+                } else if (msg == "Liked2") {
+                    comment.likes += 2;
+                    comment.l_d = "Like";
+                } else if (msg == "Unliked") {
+                    comment.likes -= 1;
+                    comment.l_d = null;
+                }
+            } catch (error) {
+                if (error.status === 401) {
+                    this.errorMessage = "You need to log in first."
+                    this.errorCode = error.status;
+                }
+            }
+
+        },
+        async dislikeComment(comment) {
+            const config = this.prepare_config(comment.id)
+            try {
+                const fetchCommentsResponse = await axios.get(`${backendMainAppAddress}/post/${this.post_id}/comment/dislike`, config);
+                const msg = fetchCommentsResponse.data.msg
+                if (msg == "Disliked") {
+                    comment.likes -= 1;
+                    comment.l_d = "Dislike";
+                } else if (msg == "Disliked2") {
+                    comment.likes -= 2;
+                    comment.l_d = "Dislike";
+                } else if (msg == "Undisliked") {
+                    comment.likes += 1;
+                    comment.l_d = null;
+                }
+            } catch (error) {
+                if (error.status === 401) {
+                    this.errorMessage = "You need to log in first."
+                    this.errorCode = error.status;
+                }
+            }
+        },
+        async confirmDeletePrompt(comment) {
+            this.commentToDelete = comment;
+            this.showDeleteConfirm = true;
+            nextTick(() => {
+                this.$refs.modalContent.focus(); // Focus on the modal content
+            });
+        },
+        cancelDelete() {
+            setTimeout(() => {
+                this.commentToDelete = null;
+                this.showDeleteConfirm = false;
+            }, 100);
+        },
+        async deleteComment() {
+            const comment = this.commentToDelete;
+            const config = this.prepare_config(comment.id);
+            try {
+                const deleteCommentsResponse = await axios.delete(`${backendMainAppAddress}/post/comment`, config);
+                const index = this.parsedComments.findIndex(el => el.id === comment.id);
+                if (index !== -1) {
+                    this.parsedComments.splice(index, 1);
+                }
+            } catch (error) {
+                if (error.status === 401) {
+                    this.errorMessage = "You need to log in first.";
+                    this.errorCode = error.status;
+                }
+                else {
+                    this.errorMessage = error.detail;
+                }
+            }
+        },
+        showRepliesText(comment) {
+            if (comment.showReplies) {
+                return 'Hide';
+            }
+            if (comment.replies === 1) {
+                return '1 Reply';
+            }
+            return `${comment.replies} Replies`;
+        },
+        async login() {
+            this.$router.push({ name: 'Login' })
+        }
+    },
+};
+</script>
+
+
+
+<style scoped>
+.comment-text {
+    color: rgb(180, 180, 180);
+    font-size: 20px;
+}
+
+.reply-text {
+    color: rgb(180, 180, 180);
+    font-size: 18px;
+}
+
+.like-button,
+.dislike-button {
+    font-size: 18px;
+    margin: 0 10px;
+    color: gray;
+    text-decoration: none;
+    transition: color 0.5s;
+}
+
+.like-button.active {
+    color: rgb(255, 137, 137)
+}
+
+.dislike-button.active {
+    color: rgb(137, 159, 255)
+}
+
+.dark-textarea {
+    margin-top: auto;
+    font-size: 18px;
+    background-color: #333;
+    color: #bdbdbd;
+    border: 1px solid #555;
+    resize: none;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.dark-button {
+    font-size: 17px;
+    background-color: #0c4511;
+    color: #bdbdbd;
+    border: 1px solid #555;
+}
+
+.error {
+    color: red;
+}
+
+.username {
+    color: #949494;
+}
+
+.timestamp {
+    color: #636363;
+}
+
+.divider-text {
+    color: #555555
+}
+.modal-overlay {
+    position: fixed;          /* Fixes it to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    display: flex;           /* Centers content */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;          /* Ensure it's on top */
+}
+
+.modal-content {
+    background: rgb(27, 27, 27);      /* Background color of the modal */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    text-align: center;
+}
+
+</style>
