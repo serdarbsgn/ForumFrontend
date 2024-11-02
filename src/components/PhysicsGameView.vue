@@ -11,15 +11,10 @@
   import { backendMainAppAddress } from '@/config';
   export default {
     components: { HeaderView, },
-    props: {
-      gameName: {
-        type: String,
-      }
-    },
     mounted() {
         const existingScript = document.getElementById(`gameScript`);
         if (existingScript) {
-            window.location.href = `/games/${this.gameName}`;
+            window.location.href = `/games/physics`;
         }
         let gameScript = document.createElement('script');
         gameScript.id = `gameScript`;
@@ -28,7 +23,7 @@
     },
     methods: {
         getScript(){
-            return `${backendMainAppAddress}/js/${this.gameName}.js`
+            return `${backendMainAppAddress}/js/physics.js`
         }
     }
   };

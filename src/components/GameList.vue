@@ -6,9 +6,9 @@
         <div class="centered-content">
             <h2>These are the games I wrote in Java, then ported to JavaScript to play on browser.</h2>
             <br>
-            <a href="#" @click="pushGame('snake')" id="snake">Click Here to Play Snake</a><br>
-            <a href="#" @click="pushGame('minesweeper')" id="minesweeper">Click Here to Play MineSweeper</a><br>
-            <a href="#" @click="pushGame('physics')" id="physics">Click Here to Play Physics thingy</a>
+            <a href="#" @click="pushGame('Snake')" id="snake">Click Here to Play Snake</a><br>
+            <a href="#" @click="pushGame('Minesweeper')" id="minesweeper">Click Here to Play MineSweeper</a><br>
+            <a href="#" @click="pushGame('Physics')" id="physics">Click Here to Play Physics thingy</a>
         </div>
     </div>
 </template>
@@ -28,7 +28,7 @@ export default {
     },
     methods: {
         pushGame(name) {
-            this.$router.push({ name: 'Game', params: { "gameName": name } });
+            this.$router.push({ name: name });
         }
     }
 };

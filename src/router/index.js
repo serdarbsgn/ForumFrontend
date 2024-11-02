@@ -9,12 +9,14 @@ import PostView from '@/components/PostView.vue';
 import MarketView from '@/components/MarketView.vue';
 import CartView from '@/components/CartView.vue';
 import OrderView from '@/components/OrderView.vue';
-import GameView from '@/components/GameView.vue';
 import GameList from '@/components/GameList.vue';
 import CanvasHomeView from '@/components/CanvasHomeView.vue';
 import UserView from '@/components/UserView.vue';
 import GyroWheelView from '@/components/GyroWheelView.vue';
 import GyroWheelPrivacyView from '@/components/GyroWheelPrivacyView.vue';
+import MinesweeperGameView from '@/components/MinesweeperGameView.vue';
+import SnakeGameView from '@/components/SnakeGameView.vue';
+import PhysicsGameView from '@/components/PhysicsGameView.vue';
 const routes = [
   {
     path: '/',
@@ -80,10 +82,19 @@ const routes = [
     component: GameList,
   },
   {
-    path: '/games/:gameName',
-    name: 'Game',
-    component: GameView,
-    props: true
+    path: '/games/snake',
+    name: 'Snake',
+    component: SnakeGameView,
+  },
+  {
+    path: '/games/minesweeper',
+    name: 'Minesweeper',
+    component: MinesweeperGameView,
+  },
+  {
+    path: '/games/physics',
+    name: 'Physics',
+    component: PhysicsGameView,
   },
   {
     path: '/canvas_home',
@@ -109,7 +120,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/'),
   routes,
 });
 
