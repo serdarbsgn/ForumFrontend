@@ -6,9 +6,9 @@
         <div class="centered-content">
             <h2>These are the games I wrote in Java, then ported to JavaScript to play on browser.</h2>
             <br>
-            <a href="/games/snake" id="snake">Click Here to Play Snake</a><br>
-            <a href="/games/minesweeper" id="minesweeper">Click Here to Play MineSweeper</a><br>
-            <a href="/games/physics" id="physics">Click Here to Play Physics thingy</a>
+            <a href="#" @click="pushGame('Snake')" id="snake">Click Here to Play Snake</a><br>
+            <a href="#" @click="pushGame('Minesweeper')" id="minesweeper">Click Here to Play MineSweeper</a><br>
+            <a href="#" @click="pushGame('Physics')" id="physics">Click Here to Play Physics thingy</a>
         </div>
     </div>
 </template>
@@ -35,11 +35,12 @@ export default {
 </script>
 <style scoped>
 .centered-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 80vh;
 }
+
 </style>
