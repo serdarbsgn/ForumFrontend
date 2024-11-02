@@ -12,14 +12,14 @@
   export default {
     components: { HeaderView, },
     mounted() {
-        const existingScript = document.getElementById(`gameScript`);
-        if (existingScript) {
-            window.location.href = `/games/physics`;
-        }
-        let gameScript = document.createElement('script');
-        gameScript.id = `gameScript`;
-        gameScript.setAttribute('src', this.getScript());
-        document.head.appendChild(gameScript);
+        // const existingScript = document.getElementById(`gameScript`);
+        // if (existingScript) {
+        //     window.location.href = `/games/physics`;
+        // }
+        // let gameScript = document.createElement('script');
+        // gameScript.id = `gameScript`;
+        // gameScript.setAttribute('src', this.getScript());
+        // document.head.appendChild(gameScript);
     },
     methods: {
         getScript(){
