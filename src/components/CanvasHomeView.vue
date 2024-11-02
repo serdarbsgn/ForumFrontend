@@ -8,11 +8,6 @@
   import { username } from '@/utils/helpers2';
   export default {
     components: { HeaderView, },
-    props: {
-      gameName: {
-        type: String,
-      }
-    },
     data() {
         return {
             username,
