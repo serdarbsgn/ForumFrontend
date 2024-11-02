@@ -28,7 +28,7 @@ export default {
     },
     methods: {
         pushGame(name) {
-            this.$router.push({ name: name });
+            this.$router.push({ name: name+'GameView' });
         }
     }
 };
