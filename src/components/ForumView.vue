@@ -1,5 +1,5 @@
 <template>
-    <HeaderView :parentView="$route.name" @logout="logout" />
+    <HeaderView />
     <div>
         <template v-if="forumInfo">
             <h1>{{ forumInfo.name }}</h1>
@@ -9,6 +9,12 @@
                     '2-digit', hour: '2-digit', minute: '2-digit'
             }) }}</p>
         </template>
+        <div class="pagination">
+            <span v-for="page in pageCount" :key="page">
+                <a style="color: aliceblue" v-if="this.page===page-1">{{ page-1 }}</a>
+                <a v-else href="#" @click="navigateToPage(page-1)">{{ page-1 }}</a>
+            </span>
+        </div>
         <ul>
             <li v-for="(post, index) in posts" :key="post.id" @click="navigateToPost(post.id)"
                 :class="{ 'odd-item': index % 2 !== 0, 'even-item': index % 2 === 0 }">
@@ -54,19 +60,37 @@ export default {
         return {
             posts: [],
             forumInfo: null,
-            isLoading: false
+            isLoading: false,
+            pageCount:0
         }
     },
     async mounted() {
         this.fetchPosts();
+        this.updateTitle();
+
+    },
+    watch: {
+        async forumInfo() {
+            this.updateTitle();
+        },
+        page(){
+            this.fetchPosts()
+        }
     },
     methods: {
-        logout,
+        updateTitle() {
+            if (this.forumInfo) {
+                document.title = this.forumInfo.name;
+            } else {
+                document.title = "Forum"
+            }
+        },
         async fetchPosts() {
             try {
-                const response = await axios.get(`${backendMainAppAddress}/forum/${this.forumId}`);
+                const response = await axios.get(`${backendMainAppAddress}/forum/${this.forumId}?page=${this.page}`);
                 this.posts = response.data.posts;
-                this.forumInfo = response.data.contents
+                this.forumInfo = response.data.contents;
+                this.pageCount = response.data.postcount;
                 document.title = `${this.forumInfo.name} Forum`;
             } catch (error) {
                 console.error('Failed to fetch forum:', error);
@@ -74,6 +98,9 @@ export default {
         },
         navigateToPost(id) {
             this.$router.push({ name: 'Post', params: { "postId": id } });
+        },
+        navigateToPage(page){
+            this.$router.push({ name: 'Forum', params: { "forumId": this.forumId }, query: { page: page } });
         }
     }
 }

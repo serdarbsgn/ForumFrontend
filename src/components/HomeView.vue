@@ -1,5 +1,5 @@
 <template>
-  <HeaderView v-if="!isLoading" :parentView="$route.name" />
+  <HeaderView v-if="!isLoading" />
   <div class="centered-content">
     <p v-if="isLoading">Loading...</p>
     <div v-if="username">
@@ -81,8 +81,6 @@ export default {
       sessionStorage.removeItem('loginJwt');
       removeUserinfo();
       removeUserstats();
-      this.username = "";
-      this.$router.push({ name: 'Home' });
     },
     async login() {
       this.$router.push({ name: 'Login' })

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
-import { backendLayersAppAddress } from '@/config';
 export async function getUserinfo() {
   const storedUsername = sessionStorage.getItem('username');
   const storedProfilePicture = sessionStorage.getItem('picture');

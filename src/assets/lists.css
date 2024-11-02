@@ -57,3 +57,9 @@ li:hover {
     width: 100%;
     box-sizing: border-box;
 }
+.dark-button {
+  font-size: 17px;
+  background-color: #0c4511;
+  color: #bdbdbd;
+  border: 1px solid #555;
+}

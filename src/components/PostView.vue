@@ -1,5 +1,5 @@
 <template>
-    <HeaderView :parentView="$route.name" ref="headerView"/>
+    <HeaderView ref="headerView"/>
     <div class="centered-content">
         <template v-if="contents">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

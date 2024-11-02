@@ -152,7 +152,6 @@ export default {
                 };
                 const fetchCommentsResponse = await axios.get(`${backendMainAppAddress}/post/${this.post_id}/comments`, config);
                 this.parsedComments = fetchCommentsResponse.data.replies.map(comment => ({ ...comment, showReplies: false, replyFieldText: "Reply" }));
-                this.username = sessionStorage.getItem('username')
             } catch (error) {
                 this.errorMessage = error.response.data.detail || 'Something went wrong.';
                 this.errorCode = error.status;
@@ -386,28 +385,22 @@ export default {
 
 .modal-overlay {
     position: fixed;
-    /* Fixes it to the viewport */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
-    /* Semi-transparent black */
     display: flex;
-    /* Centers content */
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    /* Ensure it's on top */
 }
 
 .modal-content {
     background: rgb(27, 27, 27);
-    /* Background color of the modal */
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    /* Shadow effect */
     text-align: center;
 }
 </style>

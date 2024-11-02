@@ -4,8 +4,8 @@
       <ul class="navbar">
         <li><a href="#" @click.prevent="pushHome">Home</a></li>
         <li ref="other"><a @focus="toggleOtherDropdown" @blur="dropdownOtherHide" tabindex="0" href="#">Others</a></li>
-        <li><a href="/games">Games</a></li>
-        <li><a href="/gyrowheel_app">GyroWheel APP</a></li>
+        <li><a href="#" @click.prevent="pushGames">Games</a></li>
+        <li><a href="#" @click.prevent="pushGyrowheel">GyroWheel APP</a></li>
         <li><a href="/vue">Projects</a></li>
         <li v-if="username">
           <img :src="picture" alt="Profile Picture" class="profile-pic" ref="pp" @focus="toggleUserDropdown"
@@ -19,9 +19,9 @@
       </ul>
       <div v-if="username" v-show="dropdownUserVisible">
         <ul class="dropdown-menu" ref="dropdownUser">
-          <li><a href="/user">{{ username }}</a></li>
+          <li><a href="#" @click.prevent="pushUser">{{ username }}</a></li>
           <li><a href="#" @click.prevent="pushCart">Your Cart</a></li>
-          <li><a href="/orders">Your Orders</a></li>
+          <li><a href="#" @click.prevent="pushOrders">Your Orders</a></li>
           <li><a href="#" @click.prevent="logout">Logout</a></li>
         </ul>
       </div>
@@ -81,11 +81,23 @@ export default {
     pushCart() {
       this.$router.push({ name: "CartView" })
     },
+    pushOrders() {
+      this.$router.push({ name: "OrderView" })
+    },
     pushMarket() {
       this.$router.push({ name: "MarketView" })
     },
     pushHome() {
       this.$router.push({ name: 'Home' });
+    },
+    pushUser() {
+      this.$router.push({ name: 'User' });
+    },
+    pushGyrowheel() {
+      this.$router.push({ name: 'Gyrowheel' });
+    },
+    pushGames(){
+      this.$router.push({ name: 'GameList' });
     },
     relocateUserDropdown() {
       const profilePic = this.$refs.pp;

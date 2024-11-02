@@ -1,14 +1,16 @@
 <template>
-    <HeaderView :parentView="$route.name" @logout="logout" />
+    <HeaderView/>
     <div>
         <h1>Forum List</h1>
+        <div class="pagination">
+            <span v-for="page in pageCount" :key="page">
+                <a style="color: aliceblue" v-if="this.page===page-1">{{ page-1 }}</a>
+                <a v-else href="#" @click="navigateToPage(page-1)">{{ page-1 }}</a>
+            </span>
+        </div>
         <ul>
-            <li
-                v-for="(forum, index) in forums"
-                :key="forum.id"
-                @click="navigateToForum(forum.id)"
-                :class="{ 'odd-item': index % 2 !== 0, 'even-item': index % 2 === 0 }"
-            >
+            <li v-for="(forum, index) in forums" :key="forum.id" @click="navigateToForum(forum.id)"
+                :class="{ 'odd-item': index % 2 !== 0, 'even-item': index % 2 === 0 }">
                 <div class="row-item">
                     <div class="flex-3">
                         <h3>{{ forum.name }}</h3>
@@ -32,34 +34,50 @@
 
 <script>
 import axios from 'axios';
-import { logout } from '@/utils/helpers';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 export default {
     components: { HeaderView, },
+    props: {
+        page: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+    },
     data() {
         return {
             forums: [],
-            isLoading:false
+            isLoading: false,
+            pageCount: 0
         }
     },
     async mounted() {
         this.fetchForums();
         document.title = `Forums`;
     },
+    watch:{
+        page(){
+            this.fetchForums()
+        }
+    },
     methods: {
-        logout,
         async fetchForums() {
+            const page = parseInt(this.$route.query.page) || 0;
             try {
-                const response = await axios.get(`${backendMainAppAddress}/forums`);
+                const response = await axios.get(`${backendMainAppAddress}/forums?page=${this.page}`);
                 this.forums = response.data.forums;
+                this.pageCount = response.data.page_count;
             } catch (error) {
                 console.error('Failed to fetch forums:', error);
             }
         },
         navigateToForum(id) {
             this.$router.push({ name: 'Forum', params: { "forumId": id } });
-        }        
+        },
+        navigateToPage(page){
+            this.$router.push({ name: 'ForumList', query: { page: page } });
+        }
     }
 }
 </script>

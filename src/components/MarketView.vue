@@ -1,15 +1,15 @@
 <template>
-  <HeaderView v-if="!isLoading" :parentView="$route.name" ref="headerView"/>
+  <HeaderView ref="headerView"/>
   <div class="centered-content">
     <h1>Product List</h1>
     <ul class="market-list">
-      <li v-for="product in products" :key="product.id" @click="navigateToForum(product.id)" class="market-item">
-        <img :src="getThumbnailUrl(product.image)" :alt="`Thumbnail for ${product.name}`" class="thumbnail" />
+      <li v-for="product in products" :key="product.id"  class="market-item">
+        <img :src="getThumbnailUrl(product.image)" @click="navigateToForum(product.id)" :alt="`Thumbnail for ${product.name}`" class="thumbnail" />
         <div class="market-item-info">
           <h3>{{ product.name }}</h3>
           <h4>{{ product.description }}</h4>
           <p>at: {{ product.price }}</p>
-          <button class="dark-button" @click.stop="addToCart(product.id)">Add</button>
+          <button :class="['dark-button', { active: this.triggerButtonAnim === product.id }]" @click.stop="addToCart(product.id)">Add</button>
         </div>
       </li>
     </ul>
@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       products: [],
+      triggerButtonAnim:null,
     };
   },
   async mounted() {
@@ -52,6 +53,10 @@ export default {
         const token = sessionStorage.getItem('loginJwt');
         const config = { headers: { Authorization: `${token}` } };
         const response = await axios.post(`${backendMainAppAddress}/cart/${id}`,{},config);
+        this.triggerButtonAnim = id;
+          setTimeout(() => {
+            this.triggerButtonAnim = null;
+          }, 500);
       } catch (error) {
         if(error.status===401){
           this.$refs.headerView.toggleLoginDropdown();
@@ -122,10 +127,15 @@ li:hover {
   box-sizing: border-box;
 }
 .dark-button {
+    transition: transform 0.3s ease, background-color 0.3s ease;
     font-size: 17px;
     background-color: #0c4511;
     color: #bdbdbd;
     border: 1px solid #555;
     border-radius: 10px;
+}
+.dark-button.active {
+  transform: rotateY(180deg);
+  background-color: #35ba35;
 }
 </style>
