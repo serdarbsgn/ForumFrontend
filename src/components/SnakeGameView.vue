@@ -9,6 +9,7 @@
 <script>
 import HeaderView from './HeaderView.vue';
 import { backendMainAppAddress } from '@/config';
+import { username } from '@/utils/helpers2';
 export default {
   components: { HeaderView, },
   data() {
