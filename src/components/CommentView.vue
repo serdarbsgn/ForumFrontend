@@ -17,13 +17,14 @@
                 </div>
             </template>
             <div v-if="showDeleteConfirm" class="modal-overlay">
-                <div class="modal-content" ref= "modalContent" v-on:blur="cancelDelete" tabindex="0">
+                <div class="modal-content" ref="modalContent" v-on:blur="cancelDelete" tabindex="0">
                     <p>Are you sure you want to <strong>delete</strong> this comment?</p>
                     <br>
                     <div style="display: flex; justify-content:space-evenly;">
                         <button class="dark-button" @click="deleteComment">Yes</button>
-                        <button class="dark-button" @click="cancelDelete">No</button></div>
+                        <button class="dark-button" @click="cancelDelete">No</button>
                     </div>
+                </div>
             </div>
             <div v-for="comment in parsedComments" :key="comment.id" :id="`comment-${comment.id}`" class="comment">
                 <br>
@@ -36,15 +37,15 @@
                             year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
                         }) }}</i>
 
-                    <a href="#" :class="['like-button', { active: comment.l_d === 'Like' }]"
+                    <a href="#" :class="['like-button', { active: comment.l_d === 'Like' && username }]"
                         @click.prevent="likeComment(comment)"><span class="material-icons">thumb_up</span></a>
                     <span class="like-count"> {{ comment.likes }} </span>
-                    <a href="#" :class="['dislike-button', { active: comment.l_d === 'Dislike' }]"
+                    <a href="#" :class="['dislike-button', { active: comment.l_d === 'Dislike' && username }]"
                         @click.prevent="dislikeComment(comment)"><span class="material-icons">thumb_down</span></a>
                     <a href="#" class="reply-link" @click.prevent="toggleReplyField(comment)">{{ comment.replyFieldText
                         }}</a>
 
-                    <template v-if="username === comment.username">
+                    <template v-if="comment.username === username">
                         <a href="#" class="delete-link" @click.prevent="confirmDeletePrompt(comment)">Delete</a>
                     </template>
                 </div>
@@ -94,6 +95,7 @@ const vFocus = focusDirective;
 
 <script>
 import { backendMainAppAddress } from '@/config';
+import { username } from '@/utils/helpers2';
 import { nextTick } from 'vue';
 import axios from 'axios';
 
@@ -118,7 +120,7 @@ export default {
             errorCode: 0,
             parsedComments: [],
             isLoading: true,
-            username: null,
+            username,
             showDeleteConfirm: false,
             commentToDelete: null,
             currentReplyFocus: null
@@ -381,25 +383,31 @@ export default {
 .divider-text {
     color: #555555
 }
+
 .modal-overlay {
-    position: fixed;          /* Fixes it to the viewport */
+    position: fixed;
+    /* Fixes it to the viewport */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
-    display: flex;           /* Centers content */
+    background: rgba(0, 0, 0, 0.7);
+    /* Semi-transparent black */
+    display: flex;
+    /* Centers content */
     justify-content: center;
     align-items: center;
-    z-index: 1000;          /* Ensure it's on top */
+    z-index: 1000;
+    /* Ensure it's on top */
 }
 
 .modal-content {
-    background: rgb(27, 27, 27);      /* Background color of the modal */
+    background: rgb(27, 27, 27);
+    /* Background color of the modal */
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    /* Shadow effect */
     text-align: center;
 }
-
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <HeaderView v-if="!isLoading" :parentView="$route.name" @logout="logout"/>
+  <HeaderView v-if="!isLoading" :parentView="$route.name" />
   <div class="centered-content">
     <p v-if="isLoading">Loading...</p>
     <div v-if="username">
@@ -30,15 +30,16 @@
 
 <script>
 import { backendMainAppAddress } from '@/config';
-import { getUserinfo, removeUserinfo, getUserMainStats, removeUserstats } from '@/utils/helpers';
+import {  getUserMainStats, removeUserstats } from '@/utils/helpers';
+import {username,picture,getUserinfo,removeUserinfo} from '@/utils/helpers2'
 import axios from 'axios';
 import HeaderView from './HeaderView.vue';
 export default {
   components: { HeaderView, },
   data() {
     return {
-      username: '',
-      picture: '',
+      username,
+      picture,
       postCount: 0,
       postKarmaTotal: 0,
       commentCount: 0,
@@ -48,17 +49,17 @@ export default {
       isProfilePictureClicked: false,
     };
   },
+  watch: {
+    async username() {
+      this.home()
+    },
+  },
   methods: {
     async home() {
       this.errorMessage = '';
       this.isLoading = true;
       try {
-        const userInfo = await getUserinfo();
-
-        if (userInfo) {
-          this.username = userInfo.username;
-          this.picture = userInfo.picture;
-        }
+        await getUserinfo();
         const userStats = await getUserMainStats();
         if (userStats) {
           this.postCount = userStats.postCount;
@@ -131,13 +132,14 @@ export default {
   text-align: center;
   min-height: 80vh;
 }
-.picture{
+
+.picture {
   max-width: 20vw;
 }
-.picture:hover{
+
+.picture:hover {
   opacity: 0.8;
   transform: scale(0.85);
   cursor: pointer;
 }
-
 </style>

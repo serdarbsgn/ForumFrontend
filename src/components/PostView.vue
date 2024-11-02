@@ -1,5 +1,5 @@
 <template>
-    <HeaderView :parentView="$route.name" @logout="logout" />
+    <HeaderView :parentView="$route.name" ref="headerView"/>
     <div class="centered-content">
         <template v-if="contents">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -37,10 +37,10 @@
 
 <script>
 import axios from 'axios';
-import { logout } from '@/utils/helpers';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import CommentView from './CommentView.vue';
+import { username } from '@/utils/helpers2';
 
 export default {
     components: { HeaderView, CommentView },
@@ -56,6 +56,7 @@ export default {
     },
     data() {
         return {
+            username,
             contents: null,
             creator: "",
             l_d: null,
@@ -65,8 +66,12 @@ export default {
     async mounted() {
         this.fetchPost();
     },
+    watch: {
+        async username() {
+            this.fetchPost();
+        },
+    },
     methods: {
-        logout,
         prepare_config() {
             const token = sessionStorage.getItem('loginJwt');
             return {
@@ -91,9 +96,8 @@ export default {
                     this.l_d = null;
                 }
             } catch (error) {
-                if (error.status === 401) {
-                    this.errorMessage = "You need to log in first."
-                    this.errorCode = error.status;
+                if(error.status===401){
+                this.$refs.headerView.toggleLoginDropdown();
                 }
             }
 
@@ -114,16 +118,15 @@ export default {
                     this.l_d = null;
                 }
             } catch (error) {
-                if (error.status === 401) {
-                    this.errorMessage = "You need to log in first."
-                    this.errorCode = error.status;
+                if(error.status===401){
+                this.$refs.headerView.toggleLoginDropdown();
                 }
             }
         },
         async fetchPost() {
             const config = this.prepare_config()
             try {
-                const response = await axios.get(`${backendMainAppAddress}/post/${this.postId}`,config);
+                const response = await axios.get(`${backendMainAppAddress}/post/${this.postId}`, config);
                 this.contents = response.data.contents;
                 this.creator = response.data.created_by;
                 this.l_d = response.data.user_like;
@@ -151,7 +154,6 @@ export default {
 
 .dislike-button.active {
     color: rgb(137, 159, 255)
-}</style>
-<style scoped src="@/assets/lists.css">
-
+}
 </style>
+<style scoped src="@/assets/lists.css"></style>

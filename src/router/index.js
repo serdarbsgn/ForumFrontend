@@ -6,7 +6,8 @@ import RegisterView from '@/components/RegisterView.vue';
 import ForumList from '@/components/ForumList.vue';
 import ForumView from '@/components/ForumView.vue';
 import PostView from '@/components/PostView.vue';
-
+import MarketView from '@/components/MarketView.vue';
+import CartView from '@/components/CartView.vue';
 const routes = [
   {
     path: '/',
@@ -44,6 +45,16 @@ const routes = [
     path: '/upload-profile-picture',
     name: 'UploadProfilePicture',
     component: UploadProfilePictureView,
+  },
+  {
+    path: '/market',
+    name: 'MarketView',
+    component: MarketView,
+  },
+  {
+    path: '/cart',
+    name: 'CartView',
+    component: CartView,
   }
 ];
 
