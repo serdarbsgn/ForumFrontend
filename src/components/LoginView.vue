@@ -51,6 +51,7 @@ export default {
         const loginToken = loginResponse.data.token;
         sessionStorage.setItem('loginJwt', loginToken);
         getUserinfo()
+        window.parent.postMessage({ response: 'Logged In' }, '*');
         if (this.redirectOnLogin) {
           this.$router.push({ name: 'Home' });
         }

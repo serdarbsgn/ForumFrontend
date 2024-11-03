@@ -27,7 +27,7 @@
       </div>
       <div v-show="dropdownOtherVisible">
         <ul class="dropdown-menu" ref="dropdownOther">
-          <li><a href="/canvas_home">Home??</a></li>
+          <li><a href="#" @click.prevent="pushCanvasHome">Home??</a></li>
           <li><a href="#" @click.prevent="pushForum">Forum</a></li>
           <li><a href="#" @click.prevent="pushMarket">Marketplace (Not Real)</a></li>
           <li><a href="/docs">Api Docs</a></li>
@@ -98,6 +98,8 @@ export default {
     },
     pushGames(){
       this.$router.push({ name: 'GameList' });
+    },pushCanvasHome(){
+      this.$router.push({name:"CanvasHome"});
     },
     relocateUserDropdown() {
       const profilePic = this.$refs.pp;

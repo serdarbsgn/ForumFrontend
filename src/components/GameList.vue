@@ -6,9 +6,9 @@
         <div class="centered-content">
             <h2>These are the games I wrote in Java, then ported to JavaScript to play on browser.</h2>
             <br>
-            <a href="#" @click="pushGame('Snake')" id="snake">Click Here to Play Snake</a><br>
-            <a href="#" @click="pushGame('Minesweeper')" id="minesweeper">Click Here to Play MineSweeper</a><br>
-            <a href="#" @click="pushGame('Physics')" id="physics">Click Here to Play Physics thingy</a>
+            <a href="#" @click.prevent="pushGame('Snake')" id="snake">Click Here to Play Snake</a><br>
+            <a href="#" @click.prevent="pushGame('Minesweeper')" id="minesweeper">Click Here to Play MineSweeper</a><br>
+            <a href="#" @click.prevent="pushGame('Physics')" id="physics">Click Here to Play Physics thingy</a>
         </div>
     </div>
 </template>
@@ -18,17 +18,12 @@ import HeaderView from './HeaderView.vue';
 
 export default {
     components: { HeaderView, },
-    props: {
-        gameName: {
-            type: String,
-        }
-    },
     mounted() {
         document.title = "Games";
     },
     methods: {
         pushGame(name) {
-            this.$router.push({ name: name });
+            this.$router.push({name})
         }
     }
 };

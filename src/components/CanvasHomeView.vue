@@ -1,54 +1,54 @@
 <template>
+    <HeaderView />
     <canvas id="homeCanvas" width="800" height="800" oncontextmenu="return false;"></canvas>
-  </template>
-  
-  <script>
-  import HeaderView from './HeaderView.vue';
-  import { backendMainAppAddress } from '@/config';
-  import { username } from '@/utils/helpers2';
-  export default {
+</template>
+
+<script>
+import HeaderView from './HeaderView.vue';
+import { canvas_home } from '@/js/home';
+import { username } from '@/utils/helpers2';
+export default {
     components: { HeaderView, },
     data() {
         return {
             username,
-            user:false,
+            user: null,
+            currentController: null // Store the current AbortController
         }
     },
     mounted() {
-        const existingScript = document.getElementById(`gameScript`);
-        if (existingScript) {
-            window.location.href = `/canvas_home`;
-        }
-        let userScript = document.createElement('script');
-        if(this.username){
-            this.user = true;
-        }else{
-            this.user = false;
-        }
-        userScript.textContent = `
-            const user = ${this.user};
-        `;
-        document.head.appendChild(userScript);
-        let gameScript = document.createElement('script');
-        gameScript.id = `gameScript`;
-        gameScript.setAttribute('src', this.getScript());
-        document.head.appendChild(gameScript);
+        this.user = this.username;
+        this.renderCanvas();
+        document.title = "Canvas Home";
     },
     watch: {
-        username(){
-            window.location.href = `/canvas_home`;
+        username(newVal, oldVal) {
+            this.user = this.username;
+            if (newVal !== oldVal) {
+                this.renderCanvas(); // Call renderCanvas when username changes
+            }
         }
     },
     methods: {
-        getScript(){
-            return `${backendMainAppAddress}/js/home.js`
+        renderCanvas() {
+
+            if (this.currentController) {
+                this.currentController.abort(); // Stop the previous instance
+            }
+
+            // Create a new AbortController for the new instance
+            this.currentController = new AbortController();
+            const { signal } = this.currentController;
+
+            // Call canvas_home with the current user and the new abort signal
+            canvas_home(this.user, signal);
         }
     }
-  };
-  </script>
-  <style scoped>
-  #homeCanvas {
+};
+</script>
+<style scoped>
+#homeCanvas {
     display: block;
     margin: auto;
-  }
-  </style>
+}
+</style>

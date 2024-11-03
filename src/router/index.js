@@ -17,6 +17,7 @@ import GyroWheelPrivacyView from '@/components/GyroWheelPrivacyView.vue';
 import MinesweeperGameView from '@/components/MinesweeperGameView.vue';
 import SnakeGameView from '@/components/SnakeGameView.vue';
 import PhysicsGameView from '@/components/PhysicsGameView.vue';
+import LogoutView from '@/components/LogoutView.vue';
 const routes = [
   {
     path: '/',
@@ -115,6 +116,11 @@ const routes = [
     path: '/privacy-policy-for-gyrowheel-app',
     name: 'GyrowheelPrivacy',
     component: GyroWheelPrivacyView,
+  },
+  {
+    path:'/logout',
+    name:'LogOut',
+    component:LogoutView
   }
 
 ];
