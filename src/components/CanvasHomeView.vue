@@ -5,7 +5,7 @@
 
 <script>
 import HeaderView from './HeaderView.vue';
-import { canvas_home } from '@/js/home';
+import { canvas_home } from '@/js/home.vue';
 import { username } from '@/utils/helpers2';
 export default {
     components: { HeaderView, },
