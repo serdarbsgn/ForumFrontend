@@ -1,14 +1,11 @@
 <template>
-    <HeaderView />
     <canvas id="homeCanvas" width="800" height="800" oncontextmenu="return false;"></canvas>
 </template>
 
 <script>
-import HeaderView from './HeaderView.vue';
 import { canvas_home } from '@/js/home';
 import { username } from '@/utils/helpers2';
 export default {
-    components: { HeaderView, },
     data() {
         return {
             username,
