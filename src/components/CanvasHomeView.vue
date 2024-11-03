@@ -5,7 +5,7 @@
 
 <script>
 import HeaderView from './HeaderView.vue';
-import { canvas_home } from '@/js/home.vue';
+import { canvas_home } from '@/js/home';
 import { username } from '@/utils/helpers2';
 export default {
     components: { HeaderView, },
@@ -23,7 +23,7 @@ export default {
     },
     watch: {
         username(newVal, oldVal) {
-            this.user = this.username;
+            this.user = this.username
             if (newVal !== oldVal) {
                 this.renderCanvas(); // Call renderCanvas when username changes
             }

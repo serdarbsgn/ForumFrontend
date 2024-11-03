@@ -16,6 +16,7 @@ export function canvas_home(user,signal) {// Get a reference to the canvas eleme
                 { "x": 0, "y": -2 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/forums", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -3 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/market", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -4 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/games", "shrink": true, "magnitude": 1, "iframe": null },
+                { "x": 0, "y": -4 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/vue", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -5 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/gyrowheel", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -6 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/logout", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -7 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/cart", "shrink": true, "magnitude": 1, "iframe": null },
@@ -33,6 +34,7 @@ export function canvas_home(user,signal) {// Get a reference to the canvas eleme
                 { "x": 0, "y": -2 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/forums", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -3 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/market", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -4 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/games", "shrink": true, "magnitude": 1, "iframe": null },
+                { "x": 0, "y": -4 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/vue", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -5 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/gyrowheel", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -6 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/login", "shrink": true, "magnitude": 1, "iframe": null },
                 { "x": 0, "y": -7 * ch10, "w": cw10, "h": ch10, "vx": getRandomInt(-3, 3), "vy": 0, "ec": getRandomInt(25, 60) / 100, "static": false, "href": "/register", "shrink": true, "magnitude": 1, "iframe": null },
@@ -456,7 +458,7 @@ export function canvas_home(user,signal) {// Get a reference to the canvas eleme
     }
 
     function mouseWheel(e) {
-        direction = Math.sign(e.deltaY)
+        const direction = Math.sign(e.deltaY)
         if (direction < 0) {
             for (let i = 0; i < rectangles.length; i++) {
                 if (rectangles[i].static) {
