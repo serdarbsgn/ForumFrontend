@@ -1,3 +1,6 @@
+<template>
+    
+</template>
 <script>
 import {logout} from '@/utils/helpers2'
 export default {

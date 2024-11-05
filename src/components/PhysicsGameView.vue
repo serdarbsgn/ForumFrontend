@@ -7,16 +7,21 @@
 </template>
 
 <script>
-import { physics } from '@/js/physics';
+import { physics,setStop } from '@/js/physics';
 import HeaderView from './HeaderView.vue';
 export default {
   components: { HeaderView, },
   mounted() {
+    setStop(false);
     physics()
     document.title = "Physics";
   },
   methods: {
 
+  }, beforeUnmount() {
+    setStop(true);
+  }, beforeRouteLeave() {
+    setStop(true);
   }
 };
 </script>

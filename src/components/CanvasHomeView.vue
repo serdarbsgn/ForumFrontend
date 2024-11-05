@@ -1,51 +1,51 @@
-<template>
+<template class="fs-cont">
     <canvas id="homeCanvas" width="800" height="800" oncontextmenu="return false;"></canvas>
+    
 </template>
 
 <script>
-import { canvas_home } from '@/js/home';
+import { canvas_home, setStop, pushToHome } from '@/js/home';
 import { username } from '@/utils/helpers2';
 export default {
     data() {
         return {
             username,
+            pushToHome,
             user: null,
-            currentController: null // Store the current AbortController
+            currentController: null, // Store the current AbortController
+            hasRendered: false
         }
     },
     mounted() {
         this.user = this.username;
+        setStop(false);
         this.renderCanvas();
         document.title = "Canvas Home";
     },
     watch: {
-        username(newVal, oldVal) {
-            this.user = this.username
-            if (newVal !== oldVal) {
-                this.renderCanvas(); // Call renderCanvas when username changes
+        pushToHome(newVal) {
+            if (newVal) {
+                setTimeout(() => {
+                    this.$router.push({ name: 'Home' });
+                }, 200);
             }
         }
     },
     methods: {
         renderCanvas() {
-
-            if (this.currentController) {
-                this.currentController.abort(); // Stop the previous instance
-            }
-
-            // Create a new AbortController for the new instance
-            this.currentController = new AbortController();
-            const { signal } = this.currentController;
-
-            // Call canvas_home with the current user and the new abort signal
-            canvas_home(this.user, signal);
+            canvas_home(this.user);
         }
+    }, beforeUnmount() {
+        setStop(true);
+    }, beforeRouteLeave() {
+        setStop(true);
     }
 };
 </script>
 <style scoped>
 #homeCanvas {
     display: block;
-    margin: auto;
+    margin: -2rem;
+
 }
 </style>
