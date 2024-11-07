@@ -24,7 +24,7 @@
       <p>Please <a href="#" @click.prevent="login">login</a> to access your profile.</p>
       <p>or <a href="#" @click.prevent="register">register</a> to create your profile.</p>
     </div>
-    <a href="/vue/projects">Click Here For Projects</a>
+    <a href="/vue/project">Click Here For Projects</a>
   </div>
 </template>
 
