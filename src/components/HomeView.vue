@@ -30,8 +30,7 @@
 
 <script>
 import { backendMainAppAddress } from '@/config';
-import {  getUserMainStats, removeUserstats } from '@/utils/helpers';
-import {username,picture,getUserinfo,removeUserinfo} from '@/utils/helpers2'
+import {username,picture,getUserinfo,removeUserinfo,getUserMainStats, removeUserstats} from '@/utils/helpers'
 import axios from 'axios';
 import HeaderView from './HeaderView.vue';
 export default {

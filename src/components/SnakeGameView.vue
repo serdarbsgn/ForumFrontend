@@ -1,9 +1,9 @@
 <template>
   <div>
     <HeaderView />
-    <br>
-    <canvas id="gameCanvas" width="800" height="800" oncontextmenu="return false;"></canvas>
     <a href="#" @click.prevent="refreshCanvas()">Resize/Restart</a>
+    <canvas id="gameCanvas" width="800" height="800" oncontextmenu="return false;"></canvas>
+    
   </div>
 </template>
 

@@ -95,7 +95,7 @@ const vFocus = focusDirective;
 
 <script>
 import { backendMainAppAddress } from '@/config';
-import { username } from '@/utils/helpers2';
+import { username } from '@/utils/helpers';
 import { nextTick } from 'vue';
 import axios from 'axios';
 

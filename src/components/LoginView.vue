@@ -18,7 +18,7 @@
 
 <script>
 import { backendMainAppAddress } from '@/config';
-import { getUserinfo } from '@/utils/helpers2';
+import { getUserinfo } from '@/utils/helpers';
 import axios from 'axios';
 
 export default {

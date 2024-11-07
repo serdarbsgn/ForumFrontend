@@ -5,7 +5,7 @@
 
 <script>
 import { canvas_home, setStop, pushToHome } from '@/js/home';
-import { username } from '@/utils/helpers2';
+import { username } from '@/utils/helpers';
 export default {
     data() {
         return {

@@ -40,7 +40,7 @@ import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import CommentView from './CommentView.vue';
-import { username } from '@/utils/helpers2';
+import { username } from '@/utils/helpers';
 
 export default {
     components: { HeaderView, CommentView },

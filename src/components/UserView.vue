@@ -3,13 +3,12 @@
     <div class="centered-content">
         <p v-if="isLoading">Loading...</p>
         <div v-if="username">
-            <h3>This page is just a placeholder.</h3>
             <h1>Welcome {{ username }}, to the Home Page!</h1>
             <div v-if="isProfilePictureClicked">
                 <a href="#" @click.prevent="change_profile_picture">Change Picture</a>
                 <a href="#" @click.prevent="remove_profile_picture">Remove Picture</a>
             </div>
-            <img :src="picture" class="picture" title="Click to Change or Remove"
+            <img :src="picture" class="picture" title="Click to Change or Remove the Profile Picture"
                 @click.prevent="toggle_profile_picture_options" />
             <p>Here are some stats about you:</p>
             <p>Post Count: {{ postCount }}</p>
@@ -24,8 +23,8 @@
                     <input class="dark-textarea" ref="updateUsernameInput" type="text" v-model="newUsername"
                         placeholder="New Username" tabindex="0" required />
                     <button type="submit" class="dark-button">Submit</button>
-                    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                 </form>
+                <p v-if="usernameErrorMessage" class="error">{{ usernameErrorMessage }}</p>
             </div>
             <p>
                 <a href="#" @click.prevent="toggleUpdatePasswordForm">Change Password</a>
@@ -33,27 +32,36 @@
 
             <div v-if="isUpdatePasswordFormVisible">
                 <form @submit.prevent="updatePassword" class="form-container">
-                    <input type="text" placeholder="Username" tabindex="0" required autocomplete="username" hidden/>
+                    <input type="text" placeholder="Username" tabindex="0" autocomplete="username" hidden />
                     <input class="dark-textarea" ref="updatePasswordInput" type="password" v-model="currentPassword"
                         placeholder="Current Password" tabindex="0" required autocomplete="current-password" />
                     <input class="dark-textarea" type="password" v-model="newPassword" placeholder="New Password"
                         required autocomplete="new-password" />
                     <button type="submit" class="dark-button">Submit</button>
-                    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                 </form>
+                <p v-if="passwordErrorMessage" class="error">{{ passwordErrorMessage }}</p>
             </div>
             <p>
                 <a href="#" @click.prevent="toggleRemoveAccountForm">Remove Account</a>
             </p>
             <div v-if="isRemoveAcccountFormVisible">
-                <form @submit.prevent="removeAccount" class="form-container">
+                <form @submit.prevent="removeAccountConfirm" class="form-container">
                     <input class="dark-textarea" ref="removeAccountInput" type="text" v-model="removeUsername"
                         placeholder="Type your username to confirm" tabindex="0" required />
                     <button type="submit" class="dark-button">Submit</button>
-                    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
                 </form>
+                <p v-if="removeErrorMessage" class="error">{{ removeErrorMessage }}</p>
             </div>
-
+            <div v-if="showRemoveConfirm" class="modal-overlay">
+                <div class="modal-content" ref="modalContent" v-on:blur="cancelRemove" tabindex="0">
+                    <p>Are you sure you want to <strong>delete</strong> your account? This is irreversible.</p>
+                    <br>
+                    <div style="display: flex; justify-content:space-evenly;">
+                        <button class="dark-button" @click="removeAccount">Yes</button>
+                        <button class="dark-button" @click="cancelRemove">No</button>
+                    </div>
+                </div>
+            </div>
             <p>
                 <a href="#" @click.prevent="logout">Logout</a>
             </p>
@@ -69,8 +77,8 @@
 
 <script>
 import { backendMainAppAddress } from '@/config';
-import { getUserMainStats, removeUserstats } from '@/utils/helpers';
-import { username, picture, getUserinfo, removeUserinfo, logout } from '@/utils/helpers2'
+import { username, picture, getUserinfo, removeUserinfo, logout, getUserMainStats, removeUserstats } from '@/utils/helpers'
+import { nextTick } from 'vue';
 import axios from 'axios';
 import HeaderView from './HeaderView.vue';
 export default {
@@ -83,16 +91,20 @@ export default {
             postKarmaTotal: 0,
             commentCount: 0,
             commentKarmaTotal: 0,
-            errorMessage: '',
+            usernameErrorMessage: '',
+            passwordErrorMessage:'',
+            removeErrorMessage:'',
+            errorMessage:'',
             isLoading: false,
             isUsernameFormVisible: false,
-            isRemoveAcccountFormVisible:false,
+            isRemoveAcccountFormVisible: false,
             isUpdatePasswordFormVisible: false,
             isProfilePictureClicked: false,
-            newPassword:null,
-            currentPassword:null,
-            newUsername:null,
-            removeUsername:null,
+            newPassword: null,
+            currentPassword: null,
+            newUsername: null,
+            removeUsername: null,
+            showRemoveConfirm: false,
 
         };
     },
@@ -141,13 +153,13 @@ export default {
         toggleUsernameForm() {
             this.isUsernameFormVisible = !this.isUsernameFormVisible;
             if (this.isUsernameFormVisible) {
-                setTimeout(() => {
+                nextTick(() => {
                     this.$refs.updateUsernameInput.focus();
-                }, 50);
+                });
             }
         },
         async updateUsername() {
-            this.errorMessage = '';
+            this.usernameErrorMessage = '';
             try {
                 const token = sessionStorage.getItem('loginJwt');
                 const config = {
@@ -159,19 +171,19 @@ export default {
                 removeUserinfo();
                 this.isUsernameFormVisible = false;
             } catch (error) {
-                this.errorMessage = error.response?.data?.detail || 'Failed to update username. Please try again.';
+                this.usernameErrorMessage = error.response?.data?.detail || 'Failed to update username. Please try again.';
             }
         },
         toggleRemoveAccountForm() {
             this.isRemoveAcccountFormVisible = !this.isRemoveAcccountFormVisible;
             if (this.isRemoveAcccountFormVisible) {
-                setTimeout(() => {
+                nextTick(() => {
                     this.$refs.removeAccountInput.focus();
-                }, 50);
+                });
             }
         },
         async removeAccount() {
-            this.errorMessage = '';
+            this.removeErrorMessage = '';
             try {
                 const token = sessionStorage.getItem('loginJwt');
                 const config = {
@@ -179,24 +191,24 @@ export default {
                         Authorization: `${token}`,
                     },
                 };
-                console.log(this.removeUsername)
                 await axios.post(`${backendMainAppAddress}/remove-account`, { username: this.removeUsername }, config);
                 logout();
                 this.isRemoveAcccountFormVisible = false;
             } catch (error) {
-                this.errorMessage = error.response?.data?.detail || 'Failed to remove user. Please try again.';
+                this.removeErrorMessage = error.response?.data?.detail || 'Failed to remove user. Please try again.';
             }
         },
         toggleUpdatePasswordForm() {
             this.isUpdatePasswordFormVisible = !this.isUpdatePasswordFormVisible;
             if (this.isUpdatePasswordFormVisible) {
-                setTimeout(() => {
-                    this.$refs.updatePasswordInput.focus();
-                }, 100);
+                nextTick(() => {
+                    this.$refs.updatePasswordInput.focus(); 
+                });
+
             }
         },
         async updatePassword() {
-            this.errorMessage = '';
+            this.passwordErrorMessage = '';
             try {
                 const token = sessionStorage.getItem('loginJwt');
                 const config = {
@@ -207,7 +219,7 @@ export default {
                 await axios.put(`${backendMainAppAddress}/password`, { current_password: this.currentPassword, new_password: this.newPassword }, config);
                 this.isUpdatePasswordFormVisible = false;
             } catch (error) {
-                this.errorMessage = error.response?.data?.detail || 'Failed to update password. Please try again.';
+                this.passwordErrorMessage = error.response?.data?.detail || 'Failed to update password. Please try again.';
             }
         },
         async projects() {
@@ -231,7 +243,19 @@ export default {
         },
         toggle_profile_picture_options() {
             this.isProfilePictureClicked = !this.isProfilePictureClicked;
-        }
+        },
+        async removeAccountConfirm() {
+            this.showRemoveConfirm = true;
+            nextTick(() => {
+                this.$refs.modalContent.focus(); // Focus on the modal content
+            });
+        },
+        cancelRemove() {
+            setTimeout(() => {
+                this.removeUsername = null;
+                this.showRemoveConfirm = false;
+            }, 100);
+        },
     },
     mounted() {
         this.home();
@@ -281,5 +305,28 @@ export default {
 
 .form-container {
     display: flex;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: rgb(27, 27, 27);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+.error {
+    color: red;
 }
 </style>

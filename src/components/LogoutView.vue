@@ -1,8 +1,8 @@
 <template>
-    
+
 </template>
 <script>
-import {logout} from '@/utils/helpers2'
+import {logout} from '@/utils/helpers'
 export default {
   data() {
     return {

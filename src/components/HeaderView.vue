@@ -3,12 +3,12 @@
     <nav>
       <ul class="navbar">
         <li><a href="#" @click.prevent="pushHome">Home</a></li>
-        <li ref="other"><a @focus="toggleOtherDropdown" @blur="dropdownOtherHide" tabindex="0" href="#">Others</a></li>
+        <li ref="other"><a @click.prevent="toggleOtherDropdown" @blur="dropdownOtherHide" tabindex="0" href="#">Others</a></li>
         <li><a href="#" @click.prevent="pushGames">Games</a></li>
         <li><a href="#" @click.prevent="pushGyrowheel">GyroWheel APP</a></li>
         <li><a href="/vue">Projects</a></li>
         <li v-if="username">
-          <img :src="picture" alt="Profile Picture" class="profile-pic" ref="pp" @focus="toggleUserDropdown"
+          <img :src="picture" alt="Profile Picture" class="profile-pic" ref="pp" @click.prevent="toggleUserDropdown"
             @blur="dropdownUserHide" tabindex="0">
         </li>
         <template v-if="!username">
@@ -43,9 +43,8 @@
 </template>
 
 <script>
-import {  } from '@/utils/helpers';
 import LoginView from './LoginView.vue';
-import { username,picture,getUserinfo, logout } from '@/utils/helpers2';
+import { username,picture,getUserinfo, logout } from '@/utils/helpers';
 export default {
   name: "HeaderView",
   components: { LoginView, },
@@ -122,6 +121,7 @@ export default {
       if (other) {
         let o = other.getBoundingClientRect();
         this.$refs.dropdownOther.style.left = `${o.x}px`;
+        this.$refs.dropdownOther.style.width = `${o.width}px`;
       }
     },
     toggleLoginDropdown() {
@@ -162,6 +162,7 @@ header {
   width: 100%;
   padding: 10px 20px;
   background-color: #333;
+  border-radius: 50px;
 }
 
 .navbar {
@@ -181,8 +182,9 @@ nav li {
 nav a {
   color: white;
   text-decoration: none;
-  padding: 10px 15px;
+  padding: 12px 15px;
   display: block;
+  border-radius: 50px;
 }
 
 nav img {
@@ -209,6 +211,7 @@ nav img {
   border: 1px solid #666;
   padding: 10px;
   z-index: 10;
+  border-radius: 10px;
 }
 
 .dropdown-menu li {

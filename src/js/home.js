@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 let stop = false;
-let callcount = 0;
 const rectangles = [];
+
 export const pushToHome = ref(false);;
 export function setStop(flag) {
     stop = flag;

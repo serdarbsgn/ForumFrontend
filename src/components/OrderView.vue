@@ -39,7 +39,7 @@
 import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
-import { username } from '@/utils/helpers2';
+import { username } from '@/utils/helpers';
 export default {
     components: { HeaderView, },
     data() {

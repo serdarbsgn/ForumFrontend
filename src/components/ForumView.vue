@@ -41,7 +41,6 @@
 
 <script>
 import axios from 'axios';
-import { logout } from '@/utils/helpers';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 export default {

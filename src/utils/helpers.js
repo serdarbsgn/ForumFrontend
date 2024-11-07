@@ -1,58 +1,62 @@
+// helpers.js
+import { ref, watch } from 'vue';
 import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
+
+// Define reactive variables
+export const username = ref(sessionStorage.getItem('username') || '');
+export const picture = ref(sessionStorage.getItem('picture') || '');
+
+// Function to get user info and set reactive variables
 export async function getUserinfo() {
   const storedUsername = sessionStorage.getItem('username');
   const storedProfilePicture = sessionStorage.getItem('picture');
 
   if (storedUsername && storedProfilePicture) {
-    return {
-      username: storedUsername,
-      picture: storedProfilePicture
-    };
+    username.value = storedUsername;
+    picture.value = storedProfilePicture;
+    return { username: storedUsername, picture: storedProfilePicture };
   }
 
   try {
     const token = sessionStorage.getItem('loginJwt');
-    if (!token) {
-      return null;
-    }
+    if (!token) return null;
 
-    const config = {
-      headers: {
-        Authorization: `${token}`,
-      },
-    };
+    const config = { headers: { Authorization: `${token}` } };
     const userInfoResponse = await axios.get(`${backendMainAppAddress}/userinfo`, config);
 
-    const username = userInfoResponse.data.username;
-    const picture = `${backendMainAppAddress}/profile-picture/${userInfoResponse.data.picture}`;
+    username.value = userInfoResponse.data.username;
+    picture.value = `${backendMainAppAddress}/profile-picture/${userInfoResponse.data.picture}`;
 
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('picture', picture);
-    return {
-      username,
-      picture
-    };
+    sessionStorage.setItem('username', username.value);
+    sessionStorage.setItem('picture', picture.value);
+
+    return { username: username.value, picture: picture.value };
   } catch (error) {
-    if(error.status === 401){
-        removeUserinfo();
-        removeUserstats();
-        sessionStorage.removeItem('loginJwt');
+    if (error.response?.status === 401) {
+      removeUserinfo();
+      sessionStorage.removeItem('loginJwt');
     }
     return null;
   }
 }
 
-export function removeUserinfo(){
-    sessionStorage.removeItem('username');
-    sessionStorage.removeItem('picture');
+// Function to clear user info
+export function removeUserinfo() {
+  username.value = '';
+  picture.value = '';
+  sessionStorage.removeItem('username');
+  sessionStorage.removeItem('picture');
 }
 
 export function logout(){
     sessionStorage.removeItem('loginJwt');
     removeUserinfo();
-    removeUserstats();
 }
+
+// Watch reactive variables and sync with sessionStorage
+watch(username, (newVal) => sessionStorage.setItem('username', newVal));
+watch(picture, (newVal) => sessionStorage.setItem('picture', newVal));
 
 export async function getUserMainStats() {
     const statsKey = 'userMainStats';
