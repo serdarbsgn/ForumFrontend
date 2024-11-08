@@ -1,6 +1,6 @@
 <template>
     <HeaderView/>
-    <div style="min-height: 85vh;">
+    <div style="min-height: 76vh;">
         <h1>Forum List</h1>
         <div class="pagination">
             <span v-for="page in pageCount" :key="page">

@@ -1,6 +1,6 @@
 <template>
   <HeaderView ref="headerView"/>
-  <div class="centered-content" style="min-height: 85vh;">
+  <div class="centered-content" style="min-height: 76vh;">
     <h1>Product List</h1>
     <ul class="market-list">
       <li v-for="product in products" :key="product.id"  class="market-item">
@@ -115,7 +115,7 @@ li:hover {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  min-height: 80vh;
+  min-height: 76vh;
 }
 
 .dark-textarea {

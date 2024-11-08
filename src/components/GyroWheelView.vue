@@ -1,7 +1,7 @@
 <template>
     <HeaderView />
     <br>
-    <section style="min-height: 85vh;">
+    <section style="min-height: 76vh;">
         <h2>GyroWheel APP</h2>
         <p>The source code for GyroWheel APP is publicly available at <a
                 href="https://github.com/serdarbsgn/gyrowheel">GitHub Repository</a></p>

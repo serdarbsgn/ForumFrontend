@@ -1,6 +1,6 @@
 <template>
     <HeaderView />
-    <div style="min-height: 85vh;">
+    <div style="min-height: 76vh;">
         <template v-if="forumInfo">
             <h1>{{ forumInfo.name }}</h1>
             <h2>{{ forumInfo.description }}</h2>

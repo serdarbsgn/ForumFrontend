@@ -1,6 +1,6 @@
 <template>
     <HeaderView />
-    <div style="min-height: 85vh;">
+    <div style="min-height: 76vh;">
         <h1>Cart</h1>
         <p v-if="errorMessage">{{ errorMessage }}</p>
         <ul v-if="username" style="min-height: 85vh;">
