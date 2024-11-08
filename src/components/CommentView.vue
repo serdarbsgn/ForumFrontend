@@ -16,6 +16,7 @@
                     <button @click.prevent="submitReply()" class="dark-button">Comment</button>
                 </div>
             </template>
+            <teleport to="body">
             <div v-if="showDeleteConfirm" class="modal-overlay">
                 <div class="modal-content" ref="modalContent" v-on:blur="cancelDelete" tabindex="0">
                     <p>Are you sure you want to <strong>delete</strong> this comment?</p>
@@ -26,6 +27,7 @@
                     </div>
                 </div>
             </div>
+            </teleport>
             <div v-for="comment in parsedComments" :key="comment.id" :id="`comment-${comment.id}`" class="comment">
                 <br>
                 <div><strong :class="{ 'comment-text': comment.parent_id === 0, 'reply-text': comment.parent_id !== 0 }"
