@@ -1,9 +1,9 @@
 <template>
     <HeaderView />
-    <div>
+    <div style="min-height: 85vh;">
         <h1>Cart</h1>
         <p v-if="errorMessage">{{ errorMessage }}</p>
-        <ul v-if="username">
+        <ul v-if="username" style="min-height: 85vh;">
             <li v-for="(item, index) in cart" :key="item.id"
                 :class="{ 'odd-item': index % 2 !== 0, 'even-item': index % 2 === 0 }">
                 <div class="row-item">
@@ -31,7 +31,7 @@
             </div>
         </ul>
     </div>
-    <FooterView/>
+    <FooterView />
 </template>
 
 
@@ -44,14 +44,14 @@ import HeaderView from './HeaderView.vue';
 import { username } from '@/utils/helpers';
 import FooterView from './FooterView.vue';
 export default {
-  components: { HeaderView,FooterView },
+    components: { HeaderView, FooterView },
     data() {
         return {
             username,
             cart: [],
             total: null,
             isLoading: false,
-            errorMessage:null
+            errorMessage: null
         }
     },
     async mounted() {
@@ -104,13 +104,13 @@ export default {
                 const response = await axios.put(`${backendMainAppAddress}/cart/${product_id}?quantity=${quantity}`, {}, config);
                 this.errorMessage = "";
             } catch (error) {
-                if(error.status === 422){
-                    if(error.response.data.detail[0].msg){
+                if (error.status === 422) {
+                    if (error.response.data.detail[0].msg) {
                         this.errorMessage = error.response.data.detail[0].msg;
-                    }else{
+                    } else {
                         this.errorMessage = error.response.data.detail;
                     }
-                }else{
+                } else {
                     this.errorMessage = `Failed to update item quantity, status code: ${error.status}`;
                 }
             }

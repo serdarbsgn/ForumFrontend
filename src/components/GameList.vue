@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <HeaderView />
-        <br>
+    <HeaderView />
+    <br>
+    <div style="min-height: 85vh;">
         <h1>Games</h1>
         <div class="centered-content">
             <h2>These are the games I wrote in Java, then ported to JavaScript to play on browser.</h2>

@@ -1,6 +1,6 @@
 <template>
     <HeaderView/>
-    <div>
+    <div style="min-height: 85vh;">
         <h1>Items List</h1>
         <ul v-if="username" v-for="(cart,cart_id) in orders"
                 :key="cart_id">

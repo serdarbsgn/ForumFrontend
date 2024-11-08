@@ -1,6 +1,6 @@
 <template>
     <HeaderView ref="headerView"/>
-    <div class="centered-content">
+    <div class="centered-content" style="min-height: 85vh;">
         <template v-if="contents">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <h1 v-html="contents.title"></h1>

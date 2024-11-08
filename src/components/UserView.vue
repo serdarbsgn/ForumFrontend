@@ -1,6 +1,6 @@
 <template>
     <HeaderView v-if="!isLoading" />
-    <div class="centered-content">
+    <div class="centered-content" style="min-height: 85vh;">
         <p v-if="isLoading">Loading...</p>
         <div v-if="username">
             <h1>Welcome {{ username }}, to the Home Page!</h1>

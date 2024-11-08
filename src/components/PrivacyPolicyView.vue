@@ -1,6 +1,6 @@
 <template>
     <HeaderView ref="headerView" />
-    <section>
+    <section style="min-height: 85vh;">
         <article>
             <br>
             <h1><strong>Privacy Policy</strong></h1>

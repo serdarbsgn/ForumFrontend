@@ -1,6 +1,6 @@
 <template>
   <HeaderView ref="headerView"/>
-  <div class="centered-content">
+  <div class="centered-content" style="min-height: 85vh;">
     <h1>Product List</h1>
     <ul class="market-list">
       <li v-for="product in products" :key="product.id"  class="market-item">

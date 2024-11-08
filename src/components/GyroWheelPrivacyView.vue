@@ -1,7 +1,7 @@
 <template>
     <HeaderView />
     <br>
-    <section>
+    <div style="min-height: 85vh;">
         <h2>Privacy Policy for GyroWheel APP</h2>
         <p><strong>Data Collection and Usage</strong></p>
         <p>We do not collect any personal data from users within the GyroWheel APP.</p>
@@ -15,16 +15,17 @@
             personal data is collected through these ads.</p>
         <p><strong>Contact Information</strong></p>
         <p>If you have any questions or need further information regarding our privacy practices, please contact us at
-            <a href="mailto:serdar.bsgn@gmail.com">serdar.bsgn@gmail.com</a>.</p>
-    </section>
+            <a href="mailto:serdar.bsgn@gmail.com">serdar.bsgn@gmail.com</a>.
+        </p>
+    </div>
     <br>
-    <FooterView/>
+    <FooterView />
 </template>
 
 <script>
 import HeaderView from './HeaderView.vue';
 import FooterView from './FooterView.vue';
 export default {
-  components: { HeaderView,FooterView },
+    components: { HeaderView, FooterView },
 }
 </script>

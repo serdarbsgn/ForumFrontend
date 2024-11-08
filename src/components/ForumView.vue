@@ -1,6 +1,6 @@
 <template>
     <HeaderView />
-    <div>
+    <div style="min-height: 85vh;">
         <template v-if="forumInfo">
             <h1>{{ forumInfo.name }}</h1>
             <h2>{{ forumInfo.description }}</h2>
@@ -11,8 +11,8 @@
         </template>
         <div class="pagination">
             <span v-for="page in pageCount" :key="page">
-                <a style="color: aliceblue" v-if="this.page===page-1">{{ page-1 }}</a>
-                <a v-else href="#" @click="navigateToPage(page-1)">{{ page-1 }}</a>
+                <a style="color: aliceblue" v-if="this.page === page - 1">{{ page - 1 }}</a>
+                <a v-else href="#" @click="navigateToPage(page - 1)">{{ page - 1 }}</a>
             </span>
         </div>
         <ul>
@@ -37,7 +37,7 @@
         </ul>
     </div>
     <br>
-    <FooterView/>
+    <FooterView />
 </template>
 
 
@@ -47,7 +47,7 @@ import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import FooterView from './FooterView.vue';
 export default {
-  components: { HeaderView,FooterView },
+    components: { HeaderView, FooterView },
     props: {
         forumId: {
             type: String,
@@ -63,7 +63,7 @@ export default {
             posts: [],
             forumInfo: null,
             isLoading: false,
-            pageCount:0
+            pageCount: 0
         }
     },
     async mounted() {
@@ -75,7 +75,7 @@ export default {
         async forumInfo() {
             this.updateTitle();
         },
-        page(){
+        page() {
             this.fetchPosts()
         }
     },
@@ -101,7 +101,7 @@ export default {
         navigateToPost(id) {
             this.$router.push({ name: 'Post', params: { "postId": id } });
         },
-        navigateToPage(page){
+        navigateToPage(page) {
             this.$router.push({ name: 'Forum', params: { "forumId": this.forumId }, query: { page: page } });
         }
     }
