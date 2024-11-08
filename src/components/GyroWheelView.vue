@@ -79,11 +79,14 @@
                         Policy</a></strong></p>
         </article>
     </section>
+    <br>
+    <FooterView/>
 </template>
 
 <script>
 import HeaderView from './HeaderView.vue';
+import FooterView from './FooterView.vue';
 export default {
-    components: { HeaderView, },
+  components: { HeaderView,FooterView },
 }
 </script>

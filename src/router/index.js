@@ -18,6 +18,7 @@ import MinesweeperGameView from '@/components/MinesweeperGameView.vue';
 import SnakeGameView from '@/components/SnakeGameView.vue';
 import PhysicsGameView from '@/components/PhysicsGameView.vue';
 import LogoutView from '@/components/LogoutView.vue';
+import PrivacyPolicyView from '@/components/PrivacyPolicyView.vue';
 const routes = [
   {
     path: '/',
@@ -121,6 +122,11 @@ const routes = [
     path:'/logout',
     name:'LogOut',
     component:LogoutView
+  },
+  {
+    path:'/privacy-policy',
+    name:'PrivacyPolicy',
+    component:PrivacyPolicyView
   }
 
 ];

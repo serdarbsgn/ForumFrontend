@@ -11,13 +11,15 @@
             <a href="#" @click.prevent="pushGame('Physics')" id="physics">Click Here to Play Physics thingy</a>
         </div>
     </div>
+    <br>
+    <FooterView/>
 </template>
 
 <script>
 import HeaderView from './HeaderView.vue';
-
+import FooterView from './FooterView.vue';
 export default {
-    components: { HeaderView, },
+  components: { HeaderView,FooterView },
     mounted() {
         document.title = "Games";
     },

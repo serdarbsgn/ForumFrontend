@@ -36,6 +36,8 @@
             </li>
         </ul>
     </div>
+    <br>
+    <FooterView/>
 </template>
 
 
@@ -43,8 +45,9 @@
 import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
+import FooterView from './FooterView.vue';
 export default {
-    components: { HeaderView, },
+  components: { HeaderView,FooterView },
     props: {
         forumId: {
             type: String,

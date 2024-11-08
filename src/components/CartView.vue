@@ -31,6 +31,7 @@
             </div>
         </ul>
     </div>
+    <FooterView/>
 </template>
 
 
@@ -41,8 +42,9 @@ import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import { username } from '@/utils/helpers';
+import FooterView from './FooterView.vue';
 export default {
-    components: { HeaderView, },
+  components: { HeaderView,FooterView },
     data() {
         return {
             username,

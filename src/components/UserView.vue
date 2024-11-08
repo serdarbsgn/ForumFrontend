@@ -73,6 +73,8 @@
         </div>
         <a href="#" @click.prevent="projects">Click Here For Projects</a>
     </div>
+    <br>
+    <FooterView/>
 </template>
 
 <script>
@@ -81,8 +83,9 @@ import { username, picture, getUserinfo, removeUserinfo, logout, getUserMainStat
 import { nextTick } from 'vue';
 import axios from 'axios';
 import HeaderView from './HeaderView.vue';
+import FooterView from './FooterView.vue';
 export default {
-    components: { HeaderView, },
+  components: { HeaderView,FooterView },
     data() {
         return {
             username,

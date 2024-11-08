@@ -32,6 +32,8 @@
         </template>
 
     </div>
+    <br>
+    <FooterView/>
 </template>
 
 
@@ -41,9 +43,10 @@ import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import CommentView from './CommentView.vue';
 import { username } from '@/utils/helpers';
+import FooterView from './FooterView.vue';
 
 export default {
-    components: { HeaderView, CommentView },
+    components: { HeaderView, CommentView,FooterView },
     props: {
         postId: {
             type: String,

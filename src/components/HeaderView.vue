@@ -161,6 +161,7 @@ export default {
 header {
   width: 100%;
   padding: 10px 20px;
+  /* background: linear-gradient(to right, #202b66,  #662052); */
   background-color: #202b66;
   border-radius: 50px;
 }
