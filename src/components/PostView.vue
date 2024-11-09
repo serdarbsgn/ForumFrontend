@@ -1,5 +1,5 @@
 <template>
-    <HeaderView ref="headerView"/>
+    <HeaderView ref="headerView" />
     <div class="centered-content" style="min-height: 76vh;">
         <template v-if="contents">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -23,6 +23,17 @@
                         year: 'numeric', month: '2-digit', day:
                             '2-digit', hour: '2-digit', minute: '2-digit'
                     }) }}</p>
+                    <a href="#" v-if="creator === username" @click.prevent="confirmDeletePostPrompt">Delete</a>
+                    <div v-if="showDeletePostConfirm" class="modal-overlay">
+                        <div class="modal-content" ref="modalContentPost" v-on:blur="cancelDeletePost" tabindex="0">
+                            <p>Are you sure you want to <strong>delete</strong> this post?</p>
+                            <br>
+                            <div style="display: flex; justify-content:space-evenly;">
+                                <button class="dark-button" @click="deletePost">Yes</button>
+                                <button class="dark-button" @click="cancelDeletePost">No</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -33,12 +44,13 @@
 
     </div>
     <br>
-    <FooterView/>
+    <FooterView />
 </template>
 
 
 <script>
 import axios from 'axios';
+import { nextTick } from 'vue';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import CommentView from './CommentView.vue';
@@ -46,7 +58,7 @@ import { username } from '@/utils/helpers';
 import FooterView from './FooterView.vue';
 
 export default {
-    components: { HeaderView, CommentView,FooterView },
+    components: { HeaderView, CommentView, FooterView },
     props: {
         postId: {
             type: String,
@@ -63,7 +75,8 @@ export default {
             contents: null,
             creator: "",
             l_d: null,
-            isLoading: false
+            isLoading: false,
+            showDeletePostConfirm: false,
         }
     },
     async mounted() {
@@ -83,6 +96,28 @@ export default {
                 }
             };
         },
+        async confirmDeletePostPrompt() {
+            this.showDeletePostConfirm = true;
+            nextTick(() => {
+                this.$refs.modalContentPost.focus(); // Focus on the modal content
+            });
+        },
+        cancelDeletePost() {
+            setTimeout(() => {
+                this.showDeletePostConfirm = false;
+            }, 100);
+        },
+        async deletePost() {
+            const config = this.prepare_config();
+            try {
+                const deletePostResponse = await axios.delete(`${backendMainAppAddress}/post/${this.postId}`, config);
+                this.$router.back();
+            } catch (error) {
+                if (error.status === 401) {
+                    this.$refs.headerView.toggleLoginDropdown();
+                }
+            }
+        },
         async likePost() {
             const config = this.prepare_config()
             try {
@@ -99,8 +134,8 @@ export default {
                     this.l_d = null;
                 }
             } catch (error) {
-                if(error.status===401){
-                this.$refs.headerView.toggleLoginDropdown();
+                if (error.status === 401) {
+                    this.$refs.headerView.toggleLoginDropdown();
                 }
             }
 
@@ -121,8 +156,8 @@ export default {
                     this.l_d = null;
                 }
             } catch (error) {
-                if(error.status===401){
-                this.$refs.headerView.toggleLoginDropdown();
+                if (error.status === 401) {
+                    this.$refs.headerView.toggleLoginDropdown();
                 }
             }
         },
@@ -157,6 +192,26 @@ export default {
 
 .dislike-button.active {
     color: rgb(137, 159, 255)
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: rgb(27, 27, 27);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 </style>
 <style scoped src="@/assets/lists.css"></style>

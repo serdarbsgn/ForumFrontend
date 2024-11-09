@@ -4,7 +4,7 @@
     <h1>Product List</h1>
     <ul class="market-list">
       <li v-for="product in products" :key="product.id"  class="market-item">
-        <img :src="getThumbnailUrl(product.image)" @click="navigateToForum(product.id)" :alt="`Thumbnail for ${product.name}`" class="thumbnail" />
+        <img :src="getThumbnailUrl(product.image)" @click="navigateToForum(product.forum_id)" :alt="`Thumbnail for ${product.name}`" class="thumbnail" />
         <div class="market-item-info">
           <h3>{{ product.name }}</h3>
           <h4>{{ product.description }}</h4>
@@ -62,6 +62,7 @@ export default {
           }, 500);
       } catch (error) {
         if(error.status===401){
+          console.log(this.$refs['headerView'])
           this.$refs.headerView.toggleLoginDropdown();
         }
       }

@@ -1,5 +1,5 @@
 <template>
-    <HeaderView />
+    <HeaderView ref="headerView"/>
     <div style="min-height: 76vh;">
         <template v-if="forumInfo">
             <h1>{{ forumInfo.name }}</h1>
@@ -9,6 +9,19 @@
                     '2-digit', hour: '2-digit', minute: '2-digit'
             }) }}</p>
         </template>
+        <a href="#" @click.prevent="toggleCreatePost">Create Post</a>
+        <div>
+            <p v-if="errorMessage">{{ errorMessage }}</p>
+            <div v-show="createPostField">
+                <textarea ref="postTitle" id="post-title" placeholder="Post Title" @input="adjustTextareaHeight($event)"
+                    rows="1" class="dark-textarea"></textarea>
+                <textarea ref="postContent" id="post-content" placeholder="Post Content"
+                    @input="adjustTextareaHeight($event)" rows="2" class="dark-textarea"></textarea>
+                <div class="button-container">
+                    <button @click.prevent="createPost(comment)" class="dark-button">Create</button>
+                </div>
+            </div>
+        </div>
         <div class="pagination">
             <span v-for="page in pageCount" :key="page">
                 <a style="color: aliceblue" v-if="this.page === page - 1">{{ page - 1 }}</a>
@@ -46,6 +59,7 @@ import axios from 'axios';
 import { backendMainAppAddress } from '@/config';
 import HeaderView from './HeaderView.vue';
 import FooterView from './FooterView.vue';
+import { nextTick } from 'vue';
 export default {
     components: { HeaderView, FooterView },
     props: {
@@ -63,7 +77,9 @@ export default {
             posts: [],
             forumInfo: null,
             isLoading: false,
-            pageCount: 0
+            pageCount: 0,
+            createPostField: false,
+            errorMessage:''
         }
     },
     async mounted() {
@@ -86,6 +102,61 @@ export default {
             } else {
                 document.title = "Forum"
             }
+        },
+        toggleCreatePost() {
+            this.createPostField = !this.createPostField;
+            if (this.createPostField) {
+                nextTick(() => {
+                    this.$refs.postTitle.focus();
+                });
+            }
+        },
+        async createPost() {
+            const token = sessionStorage.getItem('loginJwt');
+            if(!token){
+                this.$refs.headerView.toggleLoginDropdown();
+                return;
+            }
+            const postTitle = this.$refs.postTitle;
+            const postContent = this.$refs.postContent;
+            const data = {
+                forum_id: Number(this.forumId),
+                title: postTitle.value,
+                content: postContent.value,
+            };
+            const config = {
+                headers: {
+                    Authorization: token,
+                }
+            };
+            try {
+                await axios.post(`${backendMainAppAddress}/post`, data, config);
+                postTitle.value = '';
+                postContent.value = '';
+                postTitle.style.height = 'auto';
+                postContent.style.height = 'auto';
+                if(this.page === this.pageCount-1){
+                    this.fetchPosts()
+                }else{
+                    this.$router.push({ name: 'Forum', params: { "forumId": this.forumId }, query: { page: this.pageCount - 1 } });
+                }
+            } catch (error) {
+                if (error.status === 401) {
+                    this.$refs.headerView.toggleLoginDropdown();
+                }
+                else {
+                    if ("string_too_short" === error.response.data.detail[0].type) {
+                        this.errorMessage = "Post title and content should at least have 4 characters";
+                    } else {
+                        this.errorMessage = error.response.data.detail[0].msg
+                    }
+                }
+            }
+
+        },        adjustTextareaHeight(event) {
+            const textarea = event.target;
+            textarea.style.height = 'auto'; // Reset height to calculate the new size
+            textarea.style.height = `${textarea.scrollHeight}px`; // Set height based on scroll height
         },
         async fetchPosts() {
             try {

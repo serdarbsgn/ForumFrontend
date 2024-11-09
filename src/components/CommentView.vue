@@ -17,16 +17,16 @@
                 </div>
             </template>
             <teleport to="body">
-            <div v-if="showDeleteConfirm" class="modal-overlay">
-                <div class="modal-content" ref="modalContent" v-on:blur="cancelDelete" tabindex="0">
-                    <p>Are you sure you want to <strong>delete</strong> this comment?</p>
-                    <br>
-                    <div style="display: flex; justify-content:space-evenly;">
-                        <button class="dark-button" @click="deleteComment">Yes</button>
-                        <button class="dark-button" @click="cancelDelete">No</button>
+                <div v-if="showDeleteConfirm" class="modal-overlay">
+                    <div class="modal-content" ref="modalContent" v-on:blur="cancelDelete" tabindex="0">
+                        <p>Are you sure you want to <strong>delete</strong> this comment?</p>
+                        <br>
+                        <div style="display: flex; justify-content:space-evenly;">
+                            <button class="dark-button" @click="deleteComment">Yes</button>
+                            <button class="dark-button" @click="cancelDelete">No</button>
+                        </div>
                     </div>
                 </div>
-            </div>
             </teleport>
             <div v-for="comment in parsedComments" :key="comment.id" :id="`comment-${comment.id}`" class="comment">
                 <br>
@@ -62,14 +62,13 @@
                         </div>
                     </div>
                     <template v-if="comment.replies > 0">
-                        <a href="#" class="show-replies-link"
-                            @click.prevent="comment.showReplies = !comment.showReplies">
+                        <a href="#" class="show-replies-link" @click.prevent="toggleShowReplies(comment)">
                             {{ showRepliesText(comment) }}
                         </a>
                     </template>
                     <template v-if="comment.replies > 0">
-                        <div :style="{ marginLeft: margin_left + '%' }">
-                            <CommentView v-if="comment.showReplies" :post_id="post_id" :parent_id="comment.id" />
+                        <div :style="{ marginLeft: margin_left + '%' }" v-if="comment.showReplies">
+                            <CommentView :post_id="post_id" :parent_id="comment.id" />
                         </div>
                     </template>
                 </div>
@@ -111,6 +110,10 @@ export default {
             type: Number,
             default: 0
         },
+        page: {
+            type: Number,
+            default: 0
+        },
         margin_left: {
             type: Number,
             default: 2
@@ -120,7 +123,7 @@ export default {
         return {
             errorMessage: '',
             errorCode: 0,
-            parsedComments: [],
+            parsedComments:[],
             isLoading: true,
             username,
             showDeleteConfirm: false,
@@ -128,18 +131,15 @@ export default {
             currentReplyFocus: null
         };
     },
-    watch: {
-        post_id(newVal) {
-            this.parsedComments = [];
-            this.fetch_replies(this.parent_id, 0);
-        },
-    },
     mounted() {
-        this.fetch_replies(this.parent_id, 0);
+        this.fetch_replies(this.parent_id, this.page);
         this.isLoading = false;
     },
     methods: {
         async fetch_replies(parent_id, page) {
+            if (this.parsedComments.length > 0) {
+                return;
+            }
             this.errorMessage = '';
             const token = sessionStorage.getItem('loginJwt');
             try {
@@ -159,6 +159,9 @@ export default {
                 this.errorCode = error.status;
             }
         },
+        toggleShowReplies(comment){
+            comment.showReplies= !comment.showReplies;
+        },
         toggleReplyField(comment) {
             comment.replyFieldText = comment.replyFieldText === "Reply" ? "Hide" : "Reply";
             this.currentReplyFocus = comment.id;
@@ -170,12 +173,17 @@ export default {
         },
         async submitReply(parentComment = { id: 0 }) {
             const token = sessionStorage.getItem('loginJwt');
+            if (!token) {
+                this.errorMessage = "You need to log in first.";
+                this.errorCode = 401;
+                return;
+            }
             const replyInput = document.getElementById(`reply-content-${parentComment.id}`);
             const replyContent = replyInput.value;
             const data = {
                 parent_id: parentComment.id,
                 post_id: this.post_id,
-                content: replyContent,
+                content: replyContent
             };
             const config = {
                 headers: {
@@ -183,10 +191,22 @@ export default {
                 }
             };
             try {
-                await axios.post(`${backendMainAppAddress}/post/comment`, data, config);
+                const reply = await axios.post(`${backendMainAppAddress}/post/comment`, data, config);
                 replyInput.value = '';
                 replyInput.style.height = 'auto';
-                this.fetch_replies(this.parent_id, 0);
+                if (parentComment.hasOwnProperty('replies')) {//this is for reply of a comment.
+                    parentComment.replies += 1;
+                    parentComment.showReplies = false;
+                } else {//this is for root comments
+                    data["id"] = reply.data.id;
+                    data["username"] = this.username;
+                    data["created_at"] = Date.now();
+                    data["showReplies"] = false;
+                    data["replyFieldText"] = "Reply"
+                    data["likes"] = 0;
+                    data["replies"] = 0;
+                    this.parsedComments.push(data)
+                }
             } catch (error) {
                 if (error.status === 401) {
                     this.errorMessage = "You need to log in first.";
