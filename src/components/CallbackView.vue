@@ -9,8 +9,7 @@
   import axios from 'axios';
   import { useRouter } from 'vue-router';
   import { ref, onMounted } from 'vue';
-  import { getUserinfo } from '@/utils/helpers';
-  
+
   const callbackurl = `${backendMainAppAddress}/callback`;
   const router = useRouter();
   const isLoading = ref(true);
@@ -34,8 +33,6 @@
   
       if (response.data && response.data.token) {
         sessionStorage.setItem('loginJwt', response.data.token);
-        getUserinfo();
-        window.parent.postMessage({ response: 'Logged In' }, '*');
         router.push({ name: 'Home' });
       } else {
         errorMessage.value = 'Failed to retrieve token from backend.'
