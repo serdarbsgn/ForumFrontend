@@ -32,7 +32,7 @@
       });
   
       if (response.data && response.data.token) {
-        localStorage.setItem('jwtToken', response.data.token);
+        sessionStorage.setItem('jwtToken', response.data.token);
         router.push({ name: 'Home' });
       } else {
         errorMessage.value = 'Failed to retrieve token from backend.'
