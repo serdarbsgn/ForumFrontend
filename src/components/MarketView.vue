@@ -62,7 +62,6 @@ export default {
           }, 500);
       } catch (error) {
         if(error.status===401){
-          console.log(this.$refs['headerView'])
           this.$refs.headerView.toggleLoginDropdown();
         }
       }

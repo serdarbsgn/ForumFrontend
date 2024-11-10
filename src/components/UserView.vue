@@ -1,5 +1,5 @@
 <template>
-    <HeaderView v-if="!isLoading" />
+    <HeaderView v-if="!isLoading" ref="headerView"/>
     <div class="centered-content" style="min-height: 80vh;">
         <p v-if="isLoading">Loading...</p>
         <div v-if="username">
@@ -145,7 +145,7 @@ export default {
             removeUserstats();
         },
         async login() {
-            this.$router.push({ name: 'Login' })
+            this.$refs.headerView.toggleLoginDropdown();
         },
         async register() {
             this.$router.push({ name: 'Register' })
