@@ -17,6 +17,7 @@
       <button class="dark-button" type="submit">Register</button>
       <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </form>
+    <a href="/api/google-register">Register using Google</a>
   </div>
 </template>
 

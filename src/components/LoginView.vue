@@ -13,6 +13,7 @@
       <button class="dark-button" type="submit">Login</button>
       <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </form>
+    <a href="/api/google-register">Login using Google</a>
   </div>
 </template>
 

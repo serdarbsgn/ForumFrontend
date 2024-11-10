@@ -19,6 +19,7 @@ import SnakeGameView from '@/components/SnakeGameView.vue';
 import PhysicsGameView from '@/components/PhysicsGameView.vue';
 import LogoutView from '@/components/LogoutView.vue';
 import PrivacyPolicyView from '@/components/PrivacyPolicyView.vue';
+import CallbackView from '@/components/CallbackView.vue';
 const routes = [
   {
     path: '/',
@@ -127,6 +128,11 @@ const routes = [
     path:'/privacy-policy',
     name:'PrivacyPolicy',
     component:PrivacyPolicyView
+  },
+  {
+    path:'/callback',
+    name:'GoogleCallback',
+    component:CallbackView
   }
 
 ];
