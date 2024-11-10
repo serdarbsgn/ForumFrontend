@@ -7,7 +7,7 @@
             <p>Order id: {{cart_id}}</p>
             <li v-for="(item,index) in cart"
                 :key="cart.order_id"
-                @click="navigateToForum(item.product_id)"
+                @click="navigateToForum(item.forum_id)"
                 :class="{ 'odd-item': index % 2 !== 0, 'even-item': index % 2 === 0 }"
             >
                 <div class="row-item">

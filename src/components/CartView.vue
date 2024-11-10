@@ -7,7 +7,7 @@
             <li v-for="(item, index) in cart" :key="item.id"
                 :class="{ 'odd-item': index % 2 !== 0, 'even-item': index % 2 === 0 }">
                 <div class="row-item">
-                    <div class="flex-3" @click="navigateToForum(item.product_id)">
+                    <div class="flex-3" @click="navigateToForum(item.forum_id)">
                         <h3>{{ item.name }}</h3>
                     </div>
                     <div class="flex-1">
