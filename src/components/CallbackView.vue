@@ -33,7 +33,11 @@
   
       if (response.data && response.data.token) {
         sessionStorage.setItem('loginJwt', response.data.token);
-        router.push({ name: 'Home' });
+        let redirectPath = response.data.caller_path;
+        if(!redirectPath || redirectPath === "/login" || redirectPath === "/register"){
+            redirectPath ="/";
+        }
+        router.push(redirectPath);
       } else {
         errorMessage.value = 'Failed to retrieve token from backend.'
       }

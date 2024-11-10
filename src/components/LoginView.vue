@@ -62,10 +62,15 @@ export default {
       }
     },
     async loginWithGoogle() {
+      let currentUrl = window.location.pathname;
+      if (currentUrl === "/login" || currentUrl === "/register") {
+        currentUrl = "/";
+      }
+      const redirectUrl = `/api/google-register?url=${encodeURIComponent(currentUrl)}`;
       if (this.inIframe) {
-        window.parent.location.href = '/api/google-register';
+        window.parent.location.href = redirectUrl;
       } else {
-        window.location.href = '/api/google-register';
+        window.location.href = redirectUrl;
       }
     }
   },
