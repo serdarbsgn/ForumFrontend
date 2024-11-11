@@ -58,6 +58,9 @@ export default {
         }else{
           this.$emit("registerSuccess");
         }
+        this.username = "";
+        this.email="";
+        this.password = "";
       } catch (error) {
         this.errorMessage = error.response.data.detail || 'Register failed. Please try again.';
       }
