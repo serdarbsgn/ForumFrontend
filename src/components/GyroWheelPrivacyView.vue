@@ -15,7 +15,7 @@
             personal data is collected through these ads.</p>
         <p><strong>Contact Information</strong></p>
         <p>If you have any questions or need further information regarding our privacy practices, please contact us at
-            <a href="mailto:serdar.bsgn@gmail.com">serdar.bsgn@gmail.com</a>.
+            <a href="mailto:info@serdarbisgin.com.tr">info@serdarbisgin.com.tr</a>.
         </p>
     </div>
     <br>
