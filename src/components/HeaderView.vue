@@ -14,7 +14,9 @@
         <template v-if="!username">
           <li><a ref="login" href="#" @click.prevent="toggleLoginDropdown"
             @blur="dropdownLoginHide" tabindex="0">Login</a></li>
-          <li><a href="#" @click.prevent="register">Register</a></li>
+          <li><a ref="register" :class="['register', { active: triggerRegisterSuccessAnim }]" 
+            href="#" @click.prevent="toggleRegisterDropdown"
+              @blur="dropdownRegisterHide" tabindex="0">Register</a></li>
         </template>
       </ul>
       <div v-if="username" v-show="dropdownUserVisible">
@@ -38,6 +40,11 @@
           <LoginView :redirectOnLogin="false" />
         </ul>
       </div>
+      <div v-show="dropdownRegisterVisible">
+        <ul class="dropdown-menu" ref="dropdownRegister">
+          <RegisterView :redirectOnLogin="false" @registerSuccess="registerSuccessAnim"/>
+        </ul>
+      </div>
     </nav>
   </header>
 </template>
@@ -45,16 +52,19 @@
 <script>
 import LoginView from './LoginView.vue';
 import { username,picture,getUserinfo, logout } from '@/utils/helpers';
+import RegisterView from './RegisterView.vue';
 export default {
   name: "HeaderView",
-  components: { LoginView, },
+  components: { LoginView,RegisterView },
   data() {
     return {
       username,
       picture,
       dropdownUserVisible: false,
       dropdownOtherVisible: false,
-      dropdownLoginVisible:false
+      dropdownLoginVisible:false,
+      dropdownRegisterVisible:false,
+      triggerRegisterSuccessAnim:null
     };
   },watch: {
     async username() {
@@ -126,6 +136,9 @@ export default {
     },
     toggleLoginDropdown() {
       this.dropdownLoginVisible = !this.dropdownLoginVisible;
+      if(this.dropdownRegisterVisible){
+        this.dropdownRegisterVisible = false;
+      }
       this.relocateLoginDropdown();
     },
     dropdownLoginHide() {
@@ -139,6 +152,33 @@ export default {
         let l = login.getBoundingClientRect();
         this.$refs.dropdownLogin.style.left = `${l.x}px`;
       }
+    },
+    toggleRegisterDropdown() {
+      this.dropdownRegisterVisible = !this.dropdownRegisterVisible;
+      if(this.dropdownLoginVisible){
+        this.dropdownLoginVisible = false;
+      }
+      this.relocateRegisterDropdown();
+    },
+    dropdownRegisterHide() {
+      // setTimeout(() => {
+      //   this.dropdownLoginVisible = false;
+      // }, 200);
+    },
+    relocateRegisterDropdown() {
+      const login = this.$refs.register;
+      if (login) {
+        let l = login.getBoundingClientRect();
+        this.$refs.dropdownRegister.style.left = `${l.x}px`;
+      }
+    },
+    registerSuccessAnim(){
+      this.toggleRegisterDropdown();
+      this.triggerRegisterSuccessAnim = true;
+          setTimeout(() => {
+            this.triggerRegisterSuccessAnim = null;
+            this.toggleLoginDropdown();
+          }, 500);
     },
     async logout() {
       logout();
@@ -225,5 +265,13 @@ nav img {
 
 nav li:hover .dropdown-menu {
   display: block;
+}
+
+.register {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.register.active {
+  transform: rotateY(360deg);
+  background-color: #35ba35;
 }
 </style>

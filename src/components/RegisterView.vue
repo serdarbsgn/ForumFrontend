@@ -4,15 +4,15 @@
       <h2>Register</h2>
       <div>
         <label for="username">Username:</label>
-        <input class="dark-textarea" type="text" id="username" v-model="username" required />
+        <input class="dark-textarea" type="text" id="usernameRegister" v-model="username" required />
       </div>
       <div>
         <label for="email">Email:</label>
-        <input class="dark-textarea" type="email" id="email" v-model="email" required />
+        <input class="dark-textarea" type="email" id="emailRegister" v-model="email" required />
       </div>
       <div>
         <label for="password">Password:</label>
-        <input class="dark-textarea" type="password" id="password" v-model="password" required />
+        <input class="dark-textarea" type="password" id="passwordRegister" v-model="password" required autocomplete="off" />
       </div>
       <button class="dark-button" type="submit">Register</button>
       <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -26,6 +26,12 @@ import { backendMainAppAddress } from '@/config';
 import axios from 'axios';
 
 export default {
+  props: {
+    redirectOnLogin: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
       username: '',
@@ -47,13 +53,16 @@ export default {
           password: this.password,
           token: jwtToken,
         });
-        this.$router.push({ name: 'Login' });
+        if(this.redirectOnLogin){
+          this.$router.push({ name: 'Login' });
+        }else{
+          this.$emit("registerSuccess");
+        }
       } catch (error) {
-        this.errorMessage = error.response.data.detail[0].loc[1] + error.response.data.detail[0].msg || 'Register failed. Please try again.';
+        this.errorMessage = error.response.data.detail || 'Register failed. Please try again.';
       }
     },
-  },
-  async loginWithGoogle() {
+    async loginWithGoogle() {
     let currentUrl = window.location.pathname;
     if (currentUrl === "/login" || currentUrl === "/register") {
       currentUrl = "/";
@@ -65,6 +74,8 @@ export default {
       window.location.href = redirectUrl;
     }
   }
+  },
+  
 };
 </script>
 
