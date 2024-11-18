@@ -37,7 +37,11 @@
         if(!redirectPath || redirectPath === "/login" || redirectPath === "/register"){
             redirectPath ="/";
         }
-        router.push(redirectPath);
+        if (redirectPath.startsWith("/vue")) {
+        window.location.href = redirectPath;
+        } else {
+            router.push(redirectPath);
+        }
       } else {
         errorMessage.value = 'Failed to retrieve token from backend.'
       }
