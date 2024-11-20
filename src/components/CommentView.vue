@@ -2,8 +2,7 @@
     <p v-if="isLoading">Loading...</p>
     <div v-if="!isLoading">
         <div v-if="errorMessage">
-            <h2 class="error">{{ errorMessage }} <a v-if="errorCode === 401" href="#" @click.prevent="login">Log in</a>
-            </h2>
+            <h2 class="error">{{ errorMessage }}</h2>
 
         </div>
         <div ref="commentsContainer" class="commentsContainer">
@@ -96,7 +95,7 @@ const vFocus = focusDirective;
 
 <script>
 import { backendMainAppAddress } from '@/config';
-import { username } from '@/utils/helpers';
+import { username, dropdownLoginVisible } from '@/utils/helpers';
 import { nextTick } from 'vue';
 import axios from 'axios';
 
@@ -123,7 +122,7 @@ export default {
         return {
             errorMessage: '',
             errorCode: 0,
-            parsedComments:[],
+            parsedComments: [],
             isLoading: true,
             username,
             showDeleteConfirm: false,
@@ -134,6 +133,12 @@ export default {
     mounted() {
         this.fetch_replies(this.parent_id, this.page);
         this.isLoading = false;
+    }, watch: {
+        errorMessage() {
+            setTimeout(() => {
+                this.errorMessage = "";
+            }, 5000);
+        }
     },
     methods: {
         async fetch_replies(parent_id, page) {
@@ -159,8 +164,8 @@ export default {
                 this.errorCode = error.status;
             }
         },
-        toggleShowReplies(comment){
-            comment.showReplies= !comment.showReplies;
+        toggleShowReplies(comment) {
+            comment.showReplies = !comment.showReplies;
         },
         toggleReplyField(comment) {
             comment.replyFieldText = comment.replyFieldText === "Reply" ? "Hide" : "Reply";
@@ -174,6 +179,7 @@ export default {
         async submitReply(parentComment = { id: 0 }) {
             const token = sessionStorage.getItem('loginJwt');
             if (!token) {
+                this.login();
                 this.errorMessage = "You need to log in first.";
                 this.errorCode = 401;
                 return;
@@ -209,6 +215,7 @@ export default {
                 }
             } catch (error) {
                 if (error.status === 401) {
+                    this.login();
                     this.errorMessage = "You need to log in first.";
                     this.errorCode = error.status;
                 }
@@ -259,6 +266,7 @@ export default {
                 }
             } catch (error) {
                 if (error.status === 401) {
+                    this.login();
                     this.errorMessage = "You need to log in first."
                     this.errorCode = error.status;
                 }
@@ -282,6 +290,7 @@ export default {
                 }
             } catch (error) {
                 if (error.status === 401) {
+                    this.login();
                     this.errorMessage = "You need to log in first."
                     this.errorCode = error.status;
                 }
@@ -311,6 +320,7 @@ export default {
                 }
             } catch (error) {
                 if (error.status === 401) {
+                    this.login();
                     this.errorMessage = "You need to log in first.";
                     this.errorCode = error.status;
                 }
@@ -329,7 +339,7 @@ export default {
             return `${comment.replies} Replies`;
         },
         async login() {
-            this.$router.push({ name: 'Login' })
+            dropdownLoginVisible.value = !dropdownLoginVisible.value;
         }
     },
 };

@@ -1,5 +1,5 @@
 <template>
-  <HeaderView v-if="!isLoading" ref="headerView" />
+  <HeaderView ref="headerView" />
   <div class="centered-content" style="min-height: 76vh;">
     <p v-if="isLoading">Loading...</p>
     <div v-if="username">
@@ -88,7 +88,7 @@ export default {
       this.$refs.headerView.toggleLoginDropdown();
     },
     async register() {
-      this.$router.push({ name: 'Register' })
+      this.$refs.headerView.toggleRegisterDropdown();
     },
     async change_profile_picture() {
       this.$router.push({ name: 'UploadProfilePicture' })

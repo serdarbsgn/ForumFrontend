@@ -3,46 +3,44 @@
     <nav>
       <ul class="navbar">
         <li><a href="#" @click.prevent="pushHome">Home</a></li>
-        <li ref="other"><a @click.prevent="toggleOtherDropdown" @blur="dropdownOtherHide" tabindex="0" href="#">Others</a></li>
+        <li ref="other"><a @click.prevent="toggleOtherDropdown" tabindex="0" href="#">Others</a></li>
         <li><a href="#" @click.prevent="pushGames">Games</a></li>
         <li><a href="#" @click.prevent="pushGyrowheel">GyroWheel APP</a></li>
         <li><a href="/vue">Projects</a></li>
         <li v-if="username">
           <img :src="picture" alt="Profile Picture" class="profile-pic" ref="pp" @click.prevent="toggleUserDropdown"
-            @blur="dropdownUserHide" tabindex="0">
+            tabindex="0">
         </li>
         <template v-if="!username">
-          <li><a ref="login" href="#" @click.prevent="toggleLoginDropdown"
-            @blur="dropdownLoginHide" tabindex="0">Login</a></li>
-          <li><a ref="register" :class="['register', { active: triggerRegisterSuccessAnim }]" 
-            href="#" @click.prevent="toggleRegisterDropdown"
-              @blur="dropdownRegisterHide" tabindex="0">Register</a></li>
+          <li><a ref="login" href="#" @click.prevent="toggleLoginDropdown" tabindex="0">Login</a></li>
+          <li><a ref="register" :class="['register', { active: triggerRegisterSuccessAnim }]" href="#"
+              @click.prevent="toggleRegisterDropdown" tabindex="0">Register</a></li>
         </template>
       </ul>
-      <div v-if="username" v-show="dropdownUserVisible">
-        <ul class="dropdown-menu" ref="dropdownUser">
+      <div v-show="dropdownUserVisible && username" @focusout="handleFocusOut('dropdownUser', $event)" tabindex="0">
+        <ul class="dropdown-menu" ref="dropdownUser" tabindex="0">
           <li><a href="#" @click.prevent="pushUser">{{ username }}</a></li>
           <li><a href="#" @click.prevent="pushCart">Your Cart</a></li>
           <li><a href="#" @click.prevent="pushOrders">Your Orders</a></li>
           <li><a href="#" @click.prevent="logout">Logout</a></li>
         </ul>
       </div>
-      <div v-show="dropdownOtherVisible">
-        <ul class="dropdown-menu" ref="dropdownOther">
+      <div v-show="dropdownOtherVisible" @focusout="handleFocusOut('dropdownOther', $event)" tabindex="0">
+        <ul class="dropdown-menu" ref="dropdownOther" tabindex="0">
           <li><a href="#" @click.prevent="pushCanvasHome">Home??</a></li>
           <li><a href="#" @click.prevent="pushForum">Forum</a></li>
           <li><a href="#" @click.prevent="pushMarket">Marketplace (Not Real)</a></li>
           <li><a href="/docs">Api Docs</a></li>
         </ul>
       </div>
-      <div v-show="dropdownLoginVisible">
-        <ul class="dropdown-menu" ref="dropdownLogin">
+      <div v-show="dropdownLoginVisible" @focusout="handleFocusOut('dropdownLogin', $event)" tabindex="0">
+        <ul class="dropdown-menu" ref="dropdownLogin" tabindex="0">
           <LoginView :redirectOnLogin="false" />
         </ul>
       </div>
-      <div v-show="dropdownRegisterVisible">
-        <ul class="dropdown-menu" ref="dropdownRegister">
-          <RegisterView :redirectOnLogin="false" @registerSuccess="registerSuccessAnim"/>
+      <div v-show="dropdownRegisterVisible" @focusout="handleFocusOut('dropdownRegister', $event)" tabindex="0">
+        <ul class="dropdown-menu" ref="dropdownRegister" tabindex="0">
+          <RegisterView :redirectOnLogin="false" @registerSuccess="registerSuccessAnim" />
         </ul>
       </div>
     </nav>
@@ -51,38 +49,144 @@
 
 <script>
 import LoginView from './LoginView.vue';
-import { username,picture,getUserinfo, logout } from '@/utils/helpers';
 import RegisterView from './RegisterView.vue';
+import { username, picture, getUserinfo, logout, dropdownLoginVisible } from '@/utils/helpers';
 export default {
   name: "HeaderView",
-  components: { LoginView,RegisterView },
+  components: { LoginView, RegisterView },
   data() {
     return {
       username,
       picture,
       dropdownUserVisible: false,
       dropdownOtherVisible: false,
-      dropdownLoginVisible:false,
-      dropdownRegisterVisible:false,
-      triggerRegisterSuccessAnim:null
+      dropdownLoginVisible,
+      dropdownRegisterVisible: false,
+      triggerRegisterSuccessAnim: null
     };
-  },watch: {
+  }, watch: {
     async username() {
-      this.dropdownLoginVisible=false;
+      this.dropdownLoginVisible = false;
+    },
+    async dropdownLoginVisible() {
+      if (this.dropdownLoginVisible) {
+        this.relocateLoginDropdown();
+      }
     }
   },
   methods: {
-    async home() {
-      await getUserinfo();
+    handleFocusOut(ref, event) {
+      const dropdown = this.$refs[ref]
+
+      if (!dropdown.contains(event.relatedTarget)) {
+        this.dropdownHide(ref);
+      }
+    },
+    dropdownHide(ref) {
+      if (ref === 'dropdownLogin') {
+        this.dropdownLoginVisible = false;
+      } else if (ref === 'dropdownRegister') {
+        this.dropdownRegisterVisible = false;
+      } else if (ref === 'dropdownOther') {
+        this.dropdownOtherVisible = false;
+      } else if (ref === 'dropdownUser') {
+        this.dropdownUserVisible = false;
+      }
     },
     toggleUserDropdown() {
-      this.dropdownUserVisible = !this.dropdownUserVisible;
+      this.dropdownUserVisible = !this.dropdownUserVisible
+      if (this.dropdownUserVisible) {
+        this.$nextTick(() => {
+          this.$refs.dropdownUser.focus();
+        });
+      }
       this.relocateUserDropdown();
     },
-    dropdownUserHide() {
+    toggleOtherDropdown() {
+      this.dropdownOtherVisible = !this.dropdownOtherVisible;
+      if (this.dropdownOtherVisible) {
+        this.$nextTick(() => {
+          this.$refs.dropdownOther.focus();
+        });
+      }
+      this.relocateOtherDropdown();
+    },
+    toggleLoginDropdown() {
+      const loginElement = this.$refs.login;
+      if (loginElement) {
+        loginElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      this.dropdownLoginVisible = !this.dropdownLoginVisible;
+      if (this.dropdownLoginVisible) {
+        this.$nextTick(() => {
+          this.$refs.dropdownLogin.focus();
+        });
+      }
+    },
+    toggleRegisterDropdown() {
+      const registerElement = this.$refs.register;
+      if (registerElement) {
+        registerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      this.dropdownRegisterVisible = !this.dropdownRegisterVisible;
+      if (this.dropdownRegisterVisible) {
+        this.$nextTick(() => {
+          this.$refs.dropdownRegister.focus();
+        });
+      }
+      this.relocateRegisterDropdown();
+    },
+    relocateUserDropdown() {
+      const profilePic = this.$refs.pp;
+      if (profilePic) {
+        let pp = profilePic.getBoundingClientRect();
+        this.$refs.dropdownUser.style.left = `${pp.x}px`;
+      }
+    },
+    relocateOtherDropdown() {
+      const other = this.$refs.other;
+      if (other) {
+        let o = other.getBoundingClientRect();
+        this.$refs.dropdownOther.style.left = `${o.x}px`;
+        this.$refs.dropdownOther.style.width = `${o.width}px`;
+      }
+    },
+    relocateLoginDropdown() {
+      const login = this.$refs.login;
+      if (login) {
+        let l = login.getBoundingClientRect();
+        const windowWidth = window.innerWidth - 2.5 * l.width;
+        if (windowWidth < l.x) {
+          this.$refs.dropdownLogin.style.left = `${windowWidth}px`;
+        } else {
+          this.$refs.dropdownLogin.style.left = `${l.x}px`;
+        }
+
+      }
+    }, 
+    relocateRegisterDropdown() {
+      const register = this.$refs.register;
+      if (register) {
+        let l = register.getBoundingClientRect();
+        const windowWidth = window.innerWidth - 2.5 * l.width;
+        if (windowWidth < l.x) {
+          this.$refs.dropdownRegister.style.left = `${windowWidth}px`;
+        } else {
+          this.$refs.dropdownRegister.style.left = `${l.x}px`;
+        }
+
+      }
+    },
+    registerSuccessAnim() {
+      this.toggleRegisterDropdown();
+      this.triggerRegisterSuccessAnim = true;
       setTimeout(() => {
-        this.dropdownUserVisible = false;
-      }, 200);
+        this.triggerRegisterSuccessAnim = null;
+        this.toggleLoginDropdown();
+      }, 500);
+    },
+    async home() {
+      await getUserinfo();
     },
     pushForum() {
       this.$router.push({ name: "ForumList" })
@@ -105,94 +209,18 @@ export default {
     pushGyrowheel() {
       this.$router.push({ name: 'Gyrowheel' });
     },
-    pushGames(){
+    pushGames() {
       this.$router.push({ name: 'GameList' });
-    },pushCanvasHome(){
-      this.$router.push({name:"CanvasHome"});
-    },
-    relocateUserDropdown() {
-      const profilePic = this.$refs.pp;
-      if (profilePic) {
-        let pp = profilePic.getBoundingClientRect();
-        this.$refs.dropdownUser.style.left = `${pp.x}px`;
-      }
-    },
-    toggleOtherDropdown() {
-      this.dropdownOtherVisible = !this.dropdownOtherVisible;
-      this.relocateOtherDropdown();
-    },
-    dropdownOtherHide() {
-      setTimeout(() => {
-        this.dropdownOtherVisible = false;
-      }, 200);
-    },
-    relocateOtherDropdown() {
-      const other = this.$refs.other;
-      if (other) {
-        let o = other.getBoundingClientRect();
-        this.$refs.dropdownOther.style.left = `${o.x}px`;
-        this.$refs.dropdownOther.style.width = `${o.width}px`;
-      }
-    },
-    toggleLoginDropdown() {
-      this.dropdownLoginVisible = !this.dropdownLoginVisible;
-      if(this.dropdownRegisterVisible){
-        this.dropdownRegisterVisible = false;
-      }
-      this.relocateLoginDropdown();
-    },
-    dropdownLoginHide() {
-      // setTimeout(() => {
-      //   this.dropdownLoginVisible = false;
-      // }, 200);
-    },
-    relocateLoginDropdown() {
-      const login = this.$refs.login;
-      if (login) {
-        let l = login.getBoundingClientRect();
-        this.$refs.dropdownLogin.style.left = `${l.x}px`;
-      }
-    },
-    toggleRegisterDropdown() {
-      this.dropdownRegisterVisible = !this.dropdownRegisterVisible;
-      if(this.dropdownLoginVisible){
-        this.dropdownLoginVisible = false;
-      }
-      this.relocateRegisterDropdown();
-    },
-    dropdownRegisterHide() {
-      // setTimeout(() => {
-      //   this.dropdownLoginVisible = false;
-      // }, 200);
-    },
-    relocateRegisterDropdown() {
-      const login = this.$refs.register;
-      if (login) {
-        let l = login.getBoundingClientRect();
-        this.$refs.dropdownRegister.style.left = `${l.x}px`;
-      }
-    },
-    registerSuccessAnim(){
-      this.toggleRegisterDropdown();
-      this.triggerRegisterSuccessAnim = true;
-          setTimeout(() => {
-            this.triggerRegisterSuccessAnim = null;
-            this.toggleLoginDropdown();
-          }, 500);
+    }, pushCanvasHome() {
+      this.$router.push({ name: "CanvasHome" });
     },
     async logout() {
+      this.dropdownUserVisible =  false;
       logout();
-    },
-    login() {
-      this.$router.push({ name: 'Login' })
-    },
-    register() {
-      this.$router.push({ name: 'Register' })
-    },
+    }
   },
   mounted() {
     this.home();
-
   }
 };
 </script>
@@ -270,6 +298,7 @@ nav li:hover .dropdown-menu {
 .register {
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
+
 .register.active {
   transform: rotateY(360deg);
   background-color: #35ba35;

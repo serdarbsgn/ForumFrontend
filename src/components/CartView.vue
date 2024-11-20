@@ -29,6 +29,7 @@
                 <a href="#" @click.prevent="confirmBuy">Place Order</a>
                 <h3 class="right-container">Total {{ this.total }}</h3>
             </div>
+            <h1 v-else>Your cart is empty at this time.</h1>
         </ul>
     </div>
     <FooterView />

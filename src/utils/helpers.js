@@ -6,7 +6,7 @@ import { backendMainAppAddress } from '@/config';
 // Define reactive variables
 export const username = ref(sessionStorage.getItem('username') || '');
 export const picture = ref(sessionStorage.getItem('picture') || '');
-
+export const dropdownLoginVisible = ref(false);
 // Function to get user info and set reactive variables
 export async function getUserinfo() {
   const storedUsername = sessionStorage.getItem('username');
@@ -24,7 +24,6 @@ export async function getUserinfo() {
 
     const config = { headers: { Authorization: `${token}` } };
     const userInfoResponse = await axios.get(`${backendMainAppAddress}/userinfo`, config);
-
     username.value = userInfoResponse.data.username;
     picture.value = `${backendMainAppAddress}/profile-picture/${userInfoResponse.data.picture}`;
 
