@@ -2,14 +2,14 @@
     <HeaderView />
     <br>
     <section style="min-height: 76vh;">
-        <h2>GyroWheel APP</h2>
+        <h2 class="mode-header">GyroWheel APP</h2>
         <p>The source code for GyroWheel APP is publicly available at <a
                 href="https://github.com/serdarbsgn/gyrowheel">GitHub Repository</a></p>
         <article>
-            <h3><strong>How to Install Windows Drivers</strong></h3>
+            <h3 class="mode-header"><strong>How to Install Windows Drivers</strong></h3>
             <p>There are multiple ways to install necessary software that establishes connection with the Android App.
             </p>
-            <p><strong>Using Exe files:</strong></p>
+            <h1 class="mode-header"><strong>Using Exe files:</strong></h1>
             <p>Although downloading unknown .exe files can be risky, I can assure you that these files are safe and
                 thoroughly tested.<br>
                 But It's never bad to be safe than sorry on the internet, so I fully understand if you don't want to use
@@ -30,7 +30,7 @@
                 Windows machine and Android device.<br>
             </p>
 
-            <p><strong>Using python and downloading the source code.</strong></p>
+            <h1 class="mode-header"><strong>Using python and downloading the source code:</strong></h1>
 
             <p>This method requires you to download python first, <a href="https://www.python.org/downloads/">Install
                     Python here</a><br><br>
@@ -48,7 +48,7 @@
             </p>
         </article>
         <article>
-            <h3><strong>How to Connect using Network Mode</strong></h3>
+            <h3 class="mode-header"><strong>How to Connect using Network Mode</strong></h3>
             <p>
                 Select the "USE NETWORK" option in both Windows and Android devices and enter the IP address displayed
                 in Windows app, into the first text field on your phone.<br>
@@ -59,7 +59,7 @@
 
             </p>
 
-            <h3><strong>How to Connect using Bluetooth Mode</strong></h3>
+            <h3 class="mode-header"><strong>How to Connect using Bluetooth Mode</strong></h3>
             <p>The Windows application attempts to find and display your computer's Bluetooth MAC address
                 for easy entry in the phone app. If it fails to detect or finds multiple addresses, <br>
                 you may need to enter or select the correct address manually.<br>
@@ -90,3 +90,11 @@ export default {
   components: { HeaderView,FooterView },
 }
 </script>
+
+<style>
+
+.mode-header{
+    font-size: x-large;
+    color: azure;
+}
+</style>
