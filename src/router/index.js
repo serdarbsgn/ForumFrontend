@@ -20,6 +20,8 @@ import PhysicsGameView from '@/components/PhysicsGameView.vue';
 import LogoutView from '@/components/LogoutView.vue';
 import PrivacyPolicyView from '@/components/PrivacyPolicyView.vue';
 import CallbackView from '@/components/CallbackView.vue';
+import AddProductView from '@/components/AddProductView.vue';
+
 const routes = [
   {
     path: '/',
@@ -63,6 +65,11 @@ const routes = [
     path: '/upload-profile-picture',
     name: 'UploadProfilePicture',
     component: UploadProfilePictureView,
+  },
+  {
+    path: '/market/add-product',
+    name: 'AddProduct',
+    component: AddProductView,
   },
   {
     path: '/market',

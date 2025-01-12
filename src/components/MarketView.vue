@@ -15,6 +15,8 @@
     </ul>
   </div>
   <br>
+  <button :class="'dark-button'" @click="createProduct()">Create a product</button>
+ 
   <FooterView/>
 </template>
 
@@ -50,6 +52,9 @@ export default {
     },
     getThumbnailUrl(id) {
       return `${backendMainAppAddress}/product-picture/${id}`
+    },
+    createProduct() {
+      this.$router.push({name:'AddProduct'})
     },
     async addToCart(id){
       try {
@@ -136,6 +141,9 @@ li:hover {
     color: #bdbdbd;
     border: 1px solid #555;
     border-radius: 10px;
+}
+.dark-button:hover{
+  background-color: #1b8e25;
 }
 .dark-button.active {
   transform: rotateY(180deg);
